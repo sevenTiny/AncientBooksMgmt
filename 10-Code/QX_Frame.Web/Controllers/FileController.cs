@@ -1,4 +1,5 @@
-﻿using QX_Frame.Helper_DG;
+﻿using QX_Frame.App.Web;
+using QX_Frame.Helper_DG;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,13 +12,36 @@ using System.Web.Mvc;
 
 namespace QX_Frame.Web.Controllers
 {
-    public class FileController : Controller
+    public class FileController : WebControllerBase
     {
         // ImageList
-        public ActionResult ImageList() => View();
-        
+        public ActionResult ImageList()
+        {
+            return null;
+        }
+
         // ImageUpload
-        public ActionResult ImageUpload() => View();
+        public ActionResult ImageUpload()
+        {
+            return null;
+        }
+        [HttpPost]
+        //uploadify是逐次触发Uploadify的，所以每次只有一个文件，不需要foreach，
+        public JsonResult Uploadify(string id ,HttpPostedFileBase uploadfile)
+        {
+            //这里id拿到的值不对
+            string folderName = id;
+            if (uploadfile != null && uploadfile.ContentLength > 0)
+            {
+                var fileName = Path.GetFileName(uploadfile.FileName);
+                var path = Path.Combine(Server.MapPath("~/Uploads/"),folderName, fileName);
+                if (System.IO.File.Exists(path))
+                    System.IO.File.Delete(path);
+                uploadfile.SaveAs(path);
+                return OK(path);
+            }
+            return ERROR("upload faild!");
+        }
 
         /// <summary>
         /// Return Validate Code Iamge

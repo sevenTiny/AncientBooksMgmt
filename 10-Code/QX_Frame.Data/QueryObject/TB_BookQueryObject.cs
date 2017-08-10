@@ -7,7 +7,7 @@ using System.Linq.Expressions;
  * copyright qixiao code builder ->
  * version:4.2.0
  * author:qixiao(柒小)
- * create:2017-08-08 13:39:56
+ * create:2017-08-10 16:13:46
  **/
 
 namespace QX_Frame.Data.QueryObject
@@ -39,7 +39,7 @@ namespace QX_Frame.Data.QueryObject
 		public String Dynasty { get;set; }
 
 		// 
-		public Int32 ClassId { get;set; }
+		public Int32 CategoryId { get;set; }
 
 		// 
 		public String Functionary { get;set; }

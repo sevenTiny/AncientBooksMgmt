@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BloodTypeNameService.cs" />
     <Compile Include="BookService.cs" />
+    <Compile Include="CategoryService.cs" />
     <Compile Include="ChineseZodiacNameService.cs" />
     <Compile Include="CommentReplyService.cs" />
     <Compile Include="ConstellationNameService.cs" />

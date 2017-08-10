@@ -8,37 +8,23 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="articletitle" name="articletitle">
+                <input type="text" class="input-text" value="" placeholder="" id="articletitle" name="articletitle" v-model="Title">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">其他标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类栏目：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select name="articlecolumn" class="select">
-                        <option value="0">全部栏目</option>
-                        <option value="1">新闻古籍</option>
-                        <option value="11">├行业动态</option>
-                        <option value="12">├行业古籍</option>
-                        <option value="13">├行业新闻</option>
-                    </select>
-                </span>
+                <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2" v-model="Title2">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="articletype" class="select">
-                        <option value="0">全部类型</option>
-                        <option value="1">帮助说明</option>
-                        <option value="2">新闻古籍</option>
+                    <select name="articletype" class="select" v-model="CategoryId">
+                        <option value="1">全部类型</option>
+                        <option value="2">帮助说明</option>
+                        <option value="3">新闻古籍</option>
                     </select>
                 </span>
             </div>
@@ -46,49 +32,49 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">卷数：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="0" placeholder="" id="articlesort" name="articlesort">
+                <input type="text" class="input-text" value="0" placeholder="" id="articlesort" name="articlesort" v-model="Volume">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">朝代：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Dynasty">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">责任者：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Functionary">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">版本：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Version">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">出版者：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Publisher">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">出处（94年前）：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="FromBF49">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">出处（94年后）：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords">
+                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="FromAF49">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="abstract" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,200)"></textarea>
+                <textarea name="abstract" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,200)" v-model="Notice"></textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
             </div>
         </div>
@@ -132,7 +118,7 @@
         </div>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button onClick="article_save_submit();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存并提交审核</button>
+                <button onClick="article_save_submit();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont" v-on:click="submit">&#xe632;</i> 保存并提交审核</button>
                 <!-- <button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button> -->
                 <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
             </div>
@@ -141,15 +127,74 @@
 </div>
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/ueditor.config.js"></script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
 
 <script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            "Title": "",
+            "Title2": "",
+            "Volume": "",
+            "Dynasty": "",
+            "CategoryId": "",
+            "Functionary": "",
+            "Publisher": "",
+            "Version": "",
+            "FromBF49": "",
+            "FromAF49": "",
+            "ImageUris": "",
+            "Notice": ""
+        },
+        methods:
+        {
+            submit: function (ev) {
+                var self = this;
+                $.ajax({
+                    type: 'post',
+                    url: '/Article/AddDeal',
+                    async: true,//异步
+                    dataType: 'json',
+                    headers:
+                    {
+                    },
+                    data:
+                    {
+                        "Title": self.Title,
+                        "Title2": self.Title2,
+                        "Volume": self.Volume,
+                        "Dynasty": self.Dynasty,
+                        "CategoryId": self.CategoryId,
+                        "Functionary": self.Functionary,
+                        "Publisher": self.Publisher,
+                        "Version": self.Version,
+                        "FromBF49": self.FromBF49,
+                        "FromAF49": self.FromAF49,
+                        "ImageUris": self.ImageUris,
+                        "Notice": self.Notice
+                    },
+                    beforeSend: function () {
+                    },
+                    success: function (data) {
+                        if (data.isSuccess) {
+                            self.message = data.msg;
+                            layer.msg('添加成功!', { icon: 6, time: 1000 });
+                        } else {
+
+                        }
+                        self.message = data.msg;
+                    },
+                    error: function (data) {
+                        console.log(JSON.stringify(data));
+                    }
+                });//end Ajax
+
+                //阻止submit表单提交
+                ev.preventDefault();
+
+            }
+        }
+    })
     function article_save() {
         alert("刷新父级的时候会自动关闭弹层。")
         window.parent.location.reload();
@@ -172,7 +217,7 @@
             swf: 'lib/webuploader/0.1.5/Uploader.swf',
 
             // 文件接收服务端。
-            server: 'lib/webuploader/0.1.5/server/fileupload.php',
+            server: '/File/Uploadify/' + $("#articletitle").val(),
 
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
@@ -416,7 +461,7 @@
                 swf: 'lib/webuploader/0.1.5/Uploader.swf',
                 chunked: false,
                 chunkSize: 512 * 1024,
-                server: 'lib/webuploader/0.1.5/server/fileupload.php',
+                server: '/File/Uploadify/' + $("#articletitle").val(),
                 // runtimeOrder: 'flash',
 
                 // accept: {

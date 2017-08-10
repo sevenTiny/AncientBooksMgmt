@@ -15,6 +15,7 @@ namespace QX_Frame.Web.Config
             //register region --
             WebControllerBase.Register(c => new BloodTypeNameService());
             WebControllerBase.Register(c => new BookService());
+            WebControllerBase.Register(c => new CategoryService());
             WebControllerBase.Register(c => new ChineseZodiacNameService());
             WebControllerBase.Register(c => new CommentReplyService());
             WebControllerBase.Register(c => new ConstellationNameService());

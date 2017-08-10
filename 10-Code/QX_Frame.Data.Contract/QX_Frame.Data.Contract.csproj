@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="IBloodTypeNameService.cs" />
     <Compile Include="IBookService.cs" />
+    <Compile Include="ICategoryService.cs" />
     <Compile Include="IChineseZodiacNameService.cs" />
     <Compile Include="ICommentReplyService.cs" />
     <Compile Include="IConstellationNameService.cs" />
