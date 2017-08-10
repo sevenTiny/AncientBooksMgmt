@@ -149,7 +149,61 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Edit
-        public ActionResult Edit() => View();
+        public ActionResult Edit(Guid id)
+        {
+            using (var fact = Wcf<UserAccountService>())
+            {
+                var channel = fact.CreateChannel();
+                TB_UserInfo userInfo = channel.QuerySingle(new TB_UserInfoQueryObject { QueryCondition = t => t.UserUid == id }).Cast<TB_UserInfo>();
+                TB_UserAuthenCodes userAuthenCodes = channel.QuerySingle(new TB_UserAuthenCodesQueryObject { QueryCondition = t => t.UserUid == id }).Cast<TB_UserAuthenCodes>();
+
+                UserViewModel userViewModel = new UserViewModel();
+                userViewModel.UserUid = id;
+                userViewModel.LoginId = userInfo?.LoginId;
+                userViewModel.Name = userInfo?.NickName;
+                userViewModel.LimitCode = userAuthenCodes?.UserLimitCodes;
+                return View(userViewModel);
+            }
+        }
+
+        public ActionResult EditSave()
+        {
+            string uid = Request["uid"];
+            string loginId = Request["username"];
+            string name = Request["nickName"];
+            string pwd = Request["password"];
+
+            Guid userUid = Guid.Parse(uid);
+
+            bool addSuccess = true;
+
+            Helper_DG.Transaction_Helper_DG.Transaction(() =>
+            {
+                using (var fact = Wcf<UserAccountService>())
+                {
+                    var channel = fact.CreateChannel();
+                    TB_UserAccount userAccount = channel.QuerySingle(new TB_UserAccountQueryObject { QueryCondition = t => t.UserUid == userUid }).Cast<TB_UserAccount>();
+                    userAccount.Password = Encrypt_Helper_DG.MD5_Encrypt(pwd);
+
+                    addSuccess = addSuccess && channel.Update(userAccount);
+                }
+                using (var fact = Wcf<UserInfoService>())
+                {
+                    var channel = fact.CreateChannel();
+                    TB_UserInfo userInfo = channel.QuerySingle(new TB_UserInfoQueryObject { QueryCondition = t => t.UserUid == userUid }).Cast<TB_UserInfo>();
+                    userInfo.NickName = name;
+
+                    addSuccess = addSuccess && channel.Update(userInfo);
+                }
+            });
+
+            if (!addSuccess)
+            {
+                return ERROR("修改失败!");
+            }
+
+            return OK("修改成功!");
+        }
 
         // Delete
         public ActionResult Delete()
@@ -322,7 +376,5 @@ namespace QX_Frame.Web.Controllers
             Session.Remove("loginId");
             return Redirect("/User/Login");
         }
-
-
     }
 }
