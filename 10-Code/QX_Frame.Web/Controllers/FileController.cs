@@ -15,9 +15,9 @@ namespace QX_Frame.Web.Controllers
     public class FileController : WebControllerBase
     {
         // ImageList
-        public ActionResult ImageList()
+        public ActionResult ImageMgmt()
         {
-            return null;
+            return View();
         }
 
         // ImageUpload
@@ -27,22 +27,25 @@ namespace QX_Frame.Web.Controllers
         }
         [HttpPost]
         //uploadify是逐次触发Uploadify的，所以每次只有一个文件，不需要foreach，
-        public JsonResult Uploadify(string id ,HttpPostedFileBase uploadfile)
+        public JsonResult Uploadify()
         {
-            //这里id拿到的值不对
-            string folderName = id;
+            string folderName = Request["folder"];
+            HttpPostedFileBase uploadfile = Request.Files[0];
             if (uploadfile != null && uploadfile.ContentLength > 0)
             {
                 var fileName = Path.GetFileName(uploadfile.FileName);
-                var path = Path.Combine(Server.MapPath("~/Uploads/"),folderName, fileName);
+                string folder = Path.Combine(Server.MapPath("~/Uploads/"), folderName);
+                var path = Path.Combine(folder, fileName);
+                if (!System.IO.Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
                 if (System.IO.File.Exists(path))
                     System.IO.File.Delete(path);
                 uploadfile.SaveAs(path);
-                return OK(path);
+                string returnPath = Path.Combine("/Uploads/", folderName, fileName);
+                return OK(returnPath);
             }
             return ERROR("upload faild!");
         }
-
         /// <summary>
         /// Return Validate Code Iamge
         /// </summary>

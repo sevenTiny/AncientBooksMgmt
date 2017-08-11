@@ -15,6 +15,8 @@ namespace QX_Frame.Data.Entities
 
         public virtual DbSet<TB_Book> TB_Book { get; set; }
         public virtual DbSet<TB_Category> TB_Category { get; set; }
+        public virtual DbSet<TB_CmsStatus> TB_CmsStatus { get; set; }
+        public virtual DbSet<TB_CmsStatusName> TB_CmsStatusName { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

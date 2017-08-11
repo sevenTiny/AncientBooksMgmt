@@ -1267,6 +1267,7 @@
     <Content Include="Views\Article\Delete.cshtml" />
     <Content Include="Views\Article\Edit2.cshtml" />
     <Content Include="Views\Shared\_Layout_CommonReference.cshtml" />
+    <Content Include="Views\File\ImageMgmt.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

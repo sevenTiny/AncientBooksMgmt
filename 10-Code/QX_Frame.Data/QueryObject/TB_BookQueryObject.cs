@@ -75,6 +75,16 @@ namespace QX_Frame.Data.QueryObject
 				func = func.And(t => true);
 			}
 
+            if (this.CategoryId>1)
+            {
+                func = func.And(tt => tt.CategoryId == this.CategoryId);
+            }
+
+            if (!string.IsNullOrEmpty(this.Title))
+            {
+                func = func.And(tt => tt.Title.Contains(this.Title));
+            }
+
 			return func;
 		}
 	}

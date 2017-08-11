@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configs\QX_Frame_Data_Config.cs" />
+    <Compile Include="DTO\BookViewModel.cs" />
     <Compile Include="DTO\LimitViewModel.cs" />
     <Compile Include="DTO\UserViewModel.cs" />
     <Compile Include="Entities\DB_QX_Frame_MS_CMS.cs" />
@@ -70,17 +71,20 @@
     <Compile Include="Entities\TB_Book.cs" />
     <Compile Include="Entities\TB_Category.cs" />
     <Compile Include="Entities\TB_ChineseZodiacName.cs" />
+    <Compile Include="Entities\TB_CmsStatus.cs" />
     <Compile Include="Entities\TB_CommentReply.cs" />
     <Compile Include="Entities\TB_ConstellationName.cs" />
     <Compile Include="Entities\TB_DisplayCode.cs" />
     <Compile Include="Entities\TB_LimitCode.cs" />
     <Compile Include="Entities\TB_SexName.cs" />
+    <Compile Include="Entities\TB_CmsStatusName.cs" />
     <Compile Include="Entities\TB_UserAccount.cs" />
     <Compile Include="Entities\TB_UserAuthenCodes.cs" />
     <Compile Include="Entities\TB_UserInfo.cs" />
     <Compile Include="Entities\TB_UserRoleName.cs" />
     <Compile Include="Entities\TB_UserRoleStatus.cs" />
     <Compile Include="Entities\TB_UserStatusName.cs" />
+    <Compile Include="Options\opt_CmsStatus.cs" />
     <Compile Include="Options\opt_UserRole.cs" />
     <Compile Include="Options\opt_UserStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +92,8 @@
     <Compile Include="QueryObject\TB_BookQueryObject.cs" />
     <Compile Include="QueryObject\TB_CategoryQueryObject.cs" />
     <Compile Include="QueryObject\TB_ChineseZodiacNameQueryObject.cs" />
+    <Compile Include="QueryObject\TB_CmsStatusNameQueryObject.cs" />
+    <Compile Include="QueryObject\TB_CmsStatusQueryObject.cs" />
     <Compile Include="QueryObject\TB_CommentReplyQueryObject.cs" />
     <Compile Include="QueryObject\TB_ConstellationNameQueryObject.cs" />
     <Compile Include="QueryObject\TB_DisplayCodeQueryObject.cs" />
