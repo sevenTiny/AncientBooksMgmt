@@ -25,23 +25,18 @@ namespace QX_Frame.ConsoleApp
         static void Main(string[] args)
         {
             #region Wcf Test
-            //new Config.ClassRegisters();   //register classes
-            //new Config.ConfigBootStrap();
+            new Config.ClassRegisters();   //register classes
+            new Config.ConfigBootStrap();
 
-            //using (var fact = Wcf<PeopleService>())
-            //{
-            //    var channel = fact.CreateChannel();
-
-            //    List<V_People> poepleList = channel.QueryAll(new V_PeopleQueryObject()).Cast<List<V_People>>();
-
-            //    foreach (var item in poepleList)
-            //    {
-            //        Console.WriteLine($"{item.Uid} , {item.Name} , {item.Age} , {item.ClassName}");
-            //    }
-
-            //    // Console.WriteLine(Internationalization.GetString("MSG_1001"));
-
-            //}
+            using (var fact = Wcf<UserAccountService>())
+            {
+                var channel = fact.CreateChannel();
+                List<TB_UserAccount> userAccountList = channel.QueryAll(new TB_UserAccountQueryObject()).Cast<List<TB_UserAccount>>();
+                foreach (var item in userAccountList)
+                {
+                    Console.WriteLine($"Uid = {item.UserUid} , loginId = {item.LoginId}");
+                }
+            }
 
             #endregion
 
