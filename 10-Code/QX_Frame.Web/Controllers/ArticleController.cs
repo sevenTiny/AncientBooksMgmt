@@ -40,7 +40,7 @@ namespace QX_Frame.Web.Controllers
                     BookViewModel bookViewModel = new BookViewModel();
                     int bookStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>().StatusId;
 
-                    if (bookStatus==opt_CmsStatus.NORMAL.ToInt())
+                    if (bookStatus == opt_CmsStatus.NORMAL.ToInt())
                     {
                         bookViewModel.BookUid = item.BookUid;
                         bookViewModel.Title = item.Title;
@@ -116,18 +116,30 @@ namespace QX_Frame.Web.Controllers
                 book.Notice = Request["Notice"];
 
 
-                using (var fact = Wcf<BookService>())
+                bool isAddSuccess = true;
+                Helper_DG.Transaction_Helper_DG.Transaction(() =>
                 {
-                    var channel = fact.CreateChannel();
-                    if (channel.Add(book))
+                    using (var fact = Wcf<BookService>())
                     {
-                        return OK("添加成功!");
+                        var channel = fact.CreateChannel();
+                        isAddSuccess = isAddSuccess && channel.Add(book);
                     }
-                    else
+                    using (var fact= Wcf<CmsStatusService>())
                     {
-                        return ERROR("添加失败!");
+                        var channel = fact.CreateChannel();
+                        isAddSuccess = isAddSuccess && channel.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
                     }
+                });
+
+                if (isAddSuccess)
+                {
+                    return OK("添加成功!");
                 }
+                else
+                {
+                    return ERROR("添加失败!");
+                }
+
             }
             catch (Exception ex)
             {
@@ -138,7 +150,7 @@ namespace QX_Frame.Web.Controllers
         // Edit
         public ActionResult Edit(Guid id)
         {
-            using(var fact = Wcf<BookService>())
+            using (var fact = Wcf<BookService>())
             {
                 var channel = fact.CreateChannel();
                 TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
