@@ -1,84 +1,42 @@
-﻿@{
+﻿
+@{
+    ViewBag.Title = "UploadImages";
     Layout = "~/Views/Shared/_Layout_CommonReference.cshtml";
-    ViewBag.Title = "新增文章";
+}
+@using QX_Frame.Data.DTO;
+@{
+    BookViewModel bookViewModel = Model as BookViewModel;
+    string[] imgUris = bookViewModel.ImageUris.Split(',');
+    int imgCount = string.IsNullOrEmpty(bookViewModel.ImageUris) == true ? 0 : imgUris.Count();
 }
 <link href="~/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
 <div class="page-container" id="app">
     <form class="form form-horizontal" id="form-article-add">
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍编号：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="articleUID" name="articleUID" disabled v-model="ArticleUid">
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="articletitle" name="articletitle" v-model="Title">
+                <input type="text" class="input-text" value="" placeholder="" id="articletitle" name="articletitle" disabled v-model="Title">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">其他标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2" v-model="Title2">
+                <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2" disabled v-model="Title2">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍类型：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select name="articletype" class="select" v-model="CategoryId">
-                        <option value="1">全部类型</option>
-                        <option value="2">帮助说明</option>
-                        <option value="3">新闻古籍</option>
-                    </select>
-                </span>
+            <label class="form-label col-xs-4 col-sm-2">已经存在的图片数量：</label>
+            <div class="formControls col-xs-4 col-sm-5">
+                <input type="text" class="input-text" value="@imgCount" placeholder="" id="bookCount" name="bookCount" disabled>
             </div>
+            <a class="btn btn-primary radius formControls col-xs-4 col-sm-4" data-title="服务器图片管理" data-href="article-add.html" onclick="article_add('服务器图片管理','/Article/ImagesMgmt/@bookViewModel.BookUid')" href="javascript:;"><i class="Hui-iconfont">&#xe61d;</i> 服务器图片管理</a>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">卷数：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="0" placeholder="" id="articlesort" name="articlesort" v-model="Volume">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">朝代：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Dynasty">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">责任者：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Functionary">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">版本：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Version">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">出版者：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="Publisher">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">出处（94年前）：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="FromBF49">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">出处（94年后）：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="" placeholder="" id="keywords" name="keywords" v-model="FromAF49">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">备注：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="abstract" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,200)" v-model="Notice"></textarea>
-                <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
-            </div>
-        </div>
-        <!--
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">图片上传：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -100,39 +58,45 @@
                 </div>
             </div>
         </div>
-            -->
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button v-on:click="submit" class="btn btn-primary radius" type="button"><i class="Hui-iconfont" >&#xe632;</i> 保存并提交审核</button>
+                <button v-on:click="submit" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存并提交审核</button>
                 <!-- <button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button> -->
                 <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
             </div>
         </div>
     </form>
 </div>
+
+
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>
-
 <script type="text/javascript">
-
-    var imgUrisArray = new Array();
+    var imgUris = '@bookViewModel.ImageUris';
+    var imgUrisArray;
+    if (imgUris != null && imgUris!='') {
+        imgUrisArray = imgUris.split(',');
+    } else {
+        imgUrisArray = new Array();
+    }
 
     new Vue({
         el: '#app',
         data: {
-            "Title": "",
-            "Title2": "",
-            "Volume": "",
-            "Dynasty": "",
-            "CategoryId": "",
-            "Functionary": "",
-            "Publisher": "",
-            "Version": "",
-            "FromBF49": "",
-            "FromAF49": "",
-            "ImageUris": "",
-            "Notice": ""
+            "ArticleUid":"@bookViewModel.BookUid",
+            "Title":"@bookViewModel.Title",
+            "Title2":"@bookViewModel.Title2",
+            "Volume":"@bookViewModel.Volume",
+            "Dynasty":"@bookViewModel.Dynasty",
+            "CategoryId":"@bookViewModel.CategoryId",
+            "Functionary":"@bookViewModel.Functionary",
+            "Publisher":"@bookViewModel.Publisher",
+            "Version":"@bookViewModel.Version",
+            "FromBF49":"@bookViewModel.FromBF49",
+            "FromAF49":"@bookViewModel.FromAF49",
+            "ImageUris":"@bookViewModel.ImageUris",
+            "Notice":"@bookViewModel.Notice"
         },
         methods:
         {
@@ -140,30 +104,19 @@
                 var self = this;
                 $.ajax({
                     type: 'post',
-                    url: '/Article/AddDeal',
+                    url: '/Article/EditImages/@bookViewModel.BookUid',
                     async: true,//异步
                     dataType: 'json',
                     data:
                     {
-                        "Title": self.Title,
-                        "Title2": self.Title2,
-                        "Volume": self.Volume,
-                        "Dynasty": self.Dynasty,
-                        "CategoryId": self.CategoryId,
-                        "Functionary": self.Functionary,
-                        "Publisher": self.Publisher,
-                        "Version": self.Version,
-                        "FromBF49": self.FromBF49,
-                        "FromAF49": self.FromAF49,
-                        "ImageUris": "",
-                        "Notice": self.Notice
+                        "ImageUris": imgUrisArray.toString()
                     },
                     beforeSend: function () {
                     },
                     success: function (data) {
                         if (data.isSuccess) {
                             self.message = data.msg;
-                            layer.msg('添加成功!', { icon: 6, time: 1000 });
+                            layer.msg('修改成功!', { icon: 6, time: 1000 });
                         } else {
                             console.log(data.msg);
                         }
@@ -176,16 +129,15 @@
 
                 //阻止submit表单提交
                 ev.preventDefault();
-
             }
         }
-    })
-
+     })
     function imgUrisAdd(uri) {
-        imgUrisArray.push(uri);
+        if (imgUrisArray.indexOf(uri) < 0) {
+            imgUrisArray.push(uri);
+        }
         //console.log(imgUrisArray);
     }
-
     function article_save() {
         alert("刷新父级的时候会自动关闭弹层。")
         window.parent.location.reload();
@@ -418,7 +370,7 @@
             function addFile(file) {
 
                 //qixiao add -----
-                var folderInServer = $("#articletitle").val();
+                var folderInServer = $("#articleUID").val();
 
                 uploader.options.formData = { "folder": folderInServer };
 
@@ -768,5 +720,15 @@
         });
 
     })(jQuery);
+
+    /*古籍-添加*/
+    function article_add(title, url, w, h) {
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url
+        });
+        layer.full(index);
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

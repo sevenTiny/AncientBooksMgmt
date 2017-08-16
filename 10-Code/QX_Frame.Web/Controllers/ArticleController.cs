@@ -38,9 +38,10 @@ namespace QX_Frame.Web.Controllers
                 foreach (var item in bookList)
                 {
                     BookViewModel bookViewModel = new BookViewModel();
-                    int bookStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>().StatusId;
+                    TB_CmsStatus cmsStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>();
+                    int bookStatus = cmsStatus.StatusId;
 
-                    if (bookStatus==opt_CmsStatus.NORMAL.ToInt())
+                    if (bookStatus == opt_CmsStatus.NORMAL.ToInt())
                     {
                         bookViewModel.BookUid = item.BookUid;
                         bookViewModel.Title = item.Title;
@@ -112,7 +113,7 @@ namespace QX_Frame.Web.Controllers
                 book.Version = Request["Version"];
                 book.FromBF49 = Request["FromBF49"];
                 book.FromAF49 = Request["FromAF49"];
-                book.ImageUris = Request["ImageUris"];
+                //book.ImageUris = Request["ImageUris"];
                 book.Notice = Request["Notice"];
 
 
@@ -138,7 +139,7 @@ namespace QX_Frame.Web.Controllers
         // Edit
         public ActionResult Edit(Guid id)
         {
-            using(var fact = Wcf<BookService>())
+            using (var fact = Wcf<BookService>())
             {
                 var channel = fact.CreateChannel();
                 TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
@@ -185,6 +186,91 @@ namespace QX_Frame.Web.Controllers
                     book.FromAF49 = Request["FromAF49"];
                     //book.ImageUris = Request["ImageUris"];
                     book.Notice = Request["Notice"];
+
+                    if (channel.Update(book))
+                    {
+                        return OK("修改成功!");
+                    }
+                    else
+                    {
+                        return ERROR("修改失败!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ERROR(ex.ToString());
+            }
+        }
+
+        public ActionResult UploadImages(Guid id)
+        {
+            using (var fact = Wcf<BookService>())
+            {
+                var channel = fact.CreateChannel();
+                TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+
+                BookViewModel bookViewModel = new BookViewModel();
+
+                bookViewModel.BookUid = book.BookUid;
+                bookViewModel.Title = book.Title;
+                bookViewModel.Title2 = book.Title2;
+                bookViewModel.Volume = book.Volume;
+                bookViewModel.Dynasty = book.Dynasty;
+                bookViewModel.CategoryId = book.CategoryId;
+                bookViewModel.CategoryName = book.TB_Category.CategoryName;
+                bookViewModel.Functionary = book.Functionary;
+                bookViewModel.Publisher = book.Publisher;
+                bookViewModel.Version = book.Version;
+                bookViewModel.FromBF49 = book.FromBF49;
+                bookViewModel.FromAF49 = book.FromAF49;
+                bookViewModel.ImageUris = book.ImageUris;
+                bookViewModel.Notice = book.Notice;
+
+                return View(bookViewModel);
+            }
+        }
+
+        public ActionResult ImagesMgmt(Guid id)
+        {
+            using (var fact = Wcf<BookService>())
+            {
+                var channel = fact.CreateChannel();
+                TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+
+                BookViewModel bookViewModel = new BookViewModel();
+
+                bookViewModel.BookUid = book.BookUid;
+                bookViewModel.Title = book.Title;
+                bookViewModel.Title2 = book.Title2;
+                bookViewModel.Volume = book.Volume;
+                bookViewModel.Dynasty = book.Dynasty;
+                bookViewModel.CategoryId = book.CategoryId;
+                bookViewModel.CategoryName = book.TB_Category.CategoryName;
+                bookViewModel.Functionary = book.Functionary;
+                bookViewModel.Publisher = book.Publisher;
+                bookViewModel.Version = book.Version;
+                bookViewModel.FromBF49 = book.FromBF49;
+                bookViewModel.FromAF49 = book.FromAF49;
+                bookViewModel.ImageUris = book.ImageUris;
+                bookViewModel.Notice = book.Notice;
+
+                return View(bookViewModel);
+            }
+        }
+
+        public ActionResult EditImages(Guid id)
+        {
+            try
+            {
+                using (var fact = Wcf<BookService>())
+                {
+                    var channel = fact.CreateChannel();
+                    TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+
+                    string imgUris = Request["ImageUris"];
+
+                    book.ImageUris = imgUris.Replace("\\", "/");
 
                     if (channel.Update(book))
                     {

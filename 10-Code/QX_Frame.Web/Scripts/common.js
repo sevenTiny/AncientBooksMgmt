@@ -8,3 +8,19 @@ Array.prototype.removeByValue = function (val) {
         }
     }
 }
+
+// remove item  from old Array
+function removeValueFromArray(oldArray,val)
+{
+    if (oldArray.indexOf(val) > -1) {
+        var newArray = new Array();
+        for (var i = 0; i < oldArray.length; i++) {
+            if (oldArray[i] == val) {
+                continue;
+            }
+            newArray.push(oldArray[i]);
+        }
+        return newArray;
+    }
+    return oldArray;
+}
