@@ -8,6 +8,7 @@ using QX_Frame.Helper_DG;
 using QX_Frame.Helper_DG.Extends;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -268,12 +269,33 @@ namespace QX_Frame.Web.Controllers
                     var channel = fact.CreateChannel();
                     TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
 
+                    string[] oldImagesArray = book.ImageUris.Split(',');
+
                     string imgUris = Request["ImageUris"];
 
                     book.ImageUris = imgUris.Replace("\\", "/");
 
+                    string[] newImagesArray = book.ImageUris.Split(',');
+
+                    string[] imagesArrayDelete = oldImagesArray.Except(newImagesArray).ToArray();
+
                     if (channel.Update(book))
                     {
+                        Task_Helper_DG.TaskRun(() =>
+                        {
+                            foreach (var item in imagesArrayDelete)
+                            {
+                                if (item.Length>3)
+                                {
+                                    string serverName = Server.MapPath("~/");
+                                    string fileName = item.Substring(1, item.Length - 1);
+                                    fileName = serverName + fileName;
+                                    fileName = Path.GetFullPath(fileName);
+                                    if (System.IO.File.Exists(fileName))
+                                        System.IO.File.Delete(fileName);
+                                }
+                            }
+                        });
                         return OK("修改成功!");
                     }
                     else

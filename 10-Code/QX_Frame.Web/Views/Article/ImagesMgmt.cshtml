@@ -98,7 +98,7 @@
                 if (imgUrisArray.indexOf(imgUri) > -1) {
                     //imgUrisArray = removeValueFromArray(imgUrisArray, imgUri);//remove item from array
                     imgUrisArray.removeByValue(imgUri); 
-                    console.log(imgUrisArray);
+                    //console.log(imgUrisArray);
                  $.ajax({
                         type: 'post',
                         url: '/Article/EditImages/@bookViewModel.BookUid',
@@ -129,8 +129,6 @@
                     //ev.preventDefault();
                 }
             }
-
         }
-
     });
 </script>
