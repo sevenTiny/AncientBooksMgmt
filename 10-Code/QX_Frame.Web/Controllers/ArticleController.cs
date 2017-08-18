@@ -6,10 +6,13 @@ using QX_Frame.Data.QueryObject;
 using QX_Frame.Data.Service;
 using QX_Frame.Helper_DG;
 using QX_Frame.Helper_DG.Extends;
+using QX_Frame.Web.Filter;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,7 +20,9 @@ namespace QX_Frame.Web.Controllers
 {
     public class ArticleController : WebControllerBase
     {
-        // List
+        
+        // 古籍列表查看 1004
+        [AuthenCheckAttribute(LimitCode =1004)]
         public ActionResult List()
         {
             int categoryId = Request["categoryId"].ToInt();
@@ -50,7 +55,7 @@ namespace QX_Frame.Web.Controllers
                         bookViewModel.Volume = item.Volume;
                         bookViewModel.Dynasty = item.Dynasty;
                         bookViewModel.CategoryId = item.CategoryId;
-                        bookViewModel.CategoryName = item.TB_Category.CategoryName;
+                        bookViewModel.CategoryName = item.TB_Category?.CategoryName;
                         bookViewModel.Functionary = item.Functionary;
                         bookViewModel.Publisher = item.Publisher;
                         bookViewModel.Version = item.Version;
@@ -117,24 +122,136 @@ namespace QX_Frame.Web.Controllers
                 //book.ImageUris = Request["ImageUris"];
                 book.Notice = Request["Notice"];
 
-
-                using (var fact = Wcf<BookService>())
+                bool isSuccess = true;
+                Transaction_Helper_DG.Transaction(() =>
                 {
-                    var channel = fact.CreateChannel();
-                    if (channel.Add(book))
+                    using (var fact = Wcf<BookService>())
                     {
-                        return OK("添加成功!");
+                        var channel = fact.CreateChannel();
+                        isSuccess = isSuccess && channel.Add(book);
                     }
-                    else
+
+                    using (var fact = Wcf<CmsStatusService>())
                     {
-                        return ERROR("添加失败!");
+                        var channel = fact.CreateChannel();
+                        isSuccess = isSuccess && channel.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
                     }
+                });
+                if (isSuccess)
+                {
+                    return OK("添加成功!");
+                }
+                else
+                {
+                    return ERROR("添加失败!");
                 }
             }
             catch (Exception ex)
             {
                 return ERROR(ex.ToString());
             }
+        }
+
+        public JsonResult ImportArticle(HttpPostedFileBase fileInput)
+        {
+            try
+            {
+                string dir = Server.MapPath("~/Uploads");
+
+                if (!System.IO.Directory.Exists(dir))
+                {
+                    System.IO.Directory.CreateDirectory(dir);
+                }
+                string filePath = Path.Combine(dir, "importExcel.xlsx");
+                fileInput.SaveAs(filePath);
+
+                using (var fact = Wcf<BookService>())
+                {
+                    using (var fact_cms = Wcf<CmsStatusService>())
+                    {
+                        var channel = fact.CreateChannel();
+                        var channel_cms = fact_cms.CreateChannel();
+
+                        DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
+
+                        bool isSuccess = true;
+                        Transaction_Helper_DG.Transaction(() =>
+                        {
+                            foreach (DataRow row in table.Rows)
+                            {
+                                TB_Book book = new TB_Book();
+                                book.Title = row[0].ToString();
+                                book.Title2 = row[1].ToString();
+                                book.Volume = row[2].ToInt();
+                                book.Dynasty = row[3].ToString();
+                                book.CategoryId = row[4].ToInt();
+                                book.Functionary = row[5].ToString();
+                                book.Publisher = row[6].ToString();
+                                book.Version = row[7].ToString();
+                                book.FromBF49 = row[8].ToString();
+                                book.FromAF49 = row[9].ToString();
+                                //book.ImageUris = Request["ImageUris"];
+                                book.Notice = row[10].ToString();
+                                isSuccess = isSuccess && channel.Add(book);
+
+                                isSuccess = isSuccess && channel_cms.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
+                            }
+                        });
+
+                        if (isSuccess)
+                        {
+                            return OK("添加成功!");
+                        }
+                        else
+                        {
+                            return ERROR("添加失败!");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return ERROR("导入失败！");
+            }
+        }
+
+        public ActionResult ExportArticle()
+        {
+            using (var fact = Wcf<BookService>())
+            {
+                var channel = fact.CreateChannel();
+
+                TB_BookQueryObject bookQuery = new TB_BookQueryObject();
+                bookQuery.SqlExecuteType = App.Base.Options.ExecuteType.ExecuteDataTable;
+                bookQuery.SqlStatementTextOrSpName = "select * from TB_Book";
+
+                DataTable dt = channel.QuerySql(bookQuery).Cast<DataTable>();
+
+                string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), "AncientBooks.xlsx");
+
+                if (System.IO.File.Exists(outPutZipFile))
+                {
+                    System.IO.File.Delete(outPutZipFile);
+                }
+
+                Office_Helper_DG.DataTableToExcel(outPutZipFile, "sheet0",dt );
+
+                FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
+                long fileSize = fileStream.Length;
+                byte[] fileBuffer = new byte[fileSize];
+                fileStream.Read(fileBuffer, 0, (int)fileSize);
+                //如果不写fileStream.Close()语句，用户在下载过程中选择取消，将不能再次下载
+                fileStream.Close();
+
+                Response.ContentType = "application/octet-stream";
+                Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("AncientBooks.xlsx", Encoding.UTF8));
+                Response.AddHeader("Content-Length", fileSize.ToString());
+
+                Response.BinaryWrite(fileBuffer);
+                Response.End();
+                Response.Close();
+            }
+            return null;
         }
 
         // Edit
@@ -285,7 +402,7 @@ namespace QX_Frame.Web.Controllers
                         {
                             foreach (var item in imagesArrayDelete)
                             {
-                                if (item.Length>3)
+                                if (item.Length > 3)
                                 {
                                     string serverName = Server.MapPath("~/");
                                     string fileName = item.Substring(1, item.Length - 1);
@@ -308,6 +425,53 @@ namespace QX_Frame.Web.Controllers
             {
                 return ERROR(ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// DownLoad Images
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DownLoadImages(Guid id,string title)
+        {
+            string dirInput =Path.Combine(Server.MapPath("~/Uploads"),id.ToString());
+            string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), title+".zip");
+            string OutPutZipDir = Server.MapPath("~/Uploads/OutPut");
+
+            if (!Directory.Exists(dirInput))
+            {
+                Directory.CreateDirectory(dirInput);
+            }
+
+            IO_Helper_DG.ZipDir(dirInput, outPutZipFile);
+
+            Task_Helper_DG.TaskRun(() =>
+            {
+                foreach (var item in Directory.GetFiles(OutPutZipDir))
+                {
+                    if (!item.Equals(outPutZipFile))
+                    {
+                        System.IO.File.Delete(item);
+                    }
+                } 
+            });
+
+            FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
+            long fileSize = fileStream.Length;
+            byte[] fileBuffer = new byte[fileSize];
+            fileStream.Read(fileBuffer, 0, (int)fileSize);
+            //如果不写fileStream.Close()语句，用户在下载过程中选择取消，将不能再次下载
+            fileStream.Close();
+
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(title+".zip", Encoding.UTF8));
+            Response.AddHeader("Content-Length", fileSize.ToString());
+            
+            Response.BinaryWrite(fileBuffer);
+            Response.End();
+            Response.Close();
+
+            return OK("download success");
         }
 
         // Delete

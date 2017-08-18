@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QX_Frame.Web.Filter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,7 @@ namespace QX_Frame.Web.Controllers
 {
     public class HomeController : Controller
     {
+        [AuthenCheck]
         public ActionResult Index()
         {
             return View();

@@ -45,7 +45,9 @@ namespace QX_Frame.ConsoleApp
 
             #endregion
 
+            string filePath = "importExcel.xlsx";
 
+            DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();
