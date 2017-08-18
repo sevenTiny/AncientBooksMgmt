@@ -42,7 +42,7 @@ namespace QX_Frame.Data.Entities
         public string FromAF49 { get; set; }
 
         [StringLength(2000)]
-        public string ImageUris { get; set; }
+        public string ImageUris { get; set; } = "";
 
         [StringLength(200)]
         public string Notice { get; set; }

@@ -14,17 +14,6 @@ namespace QX_Frame.Web.Controllers
 {
     public class FileController : WebControllerBase
     {
-        // ImageList
-        public ActionResult ImageMgmt()
-        {
-            return View();
-        }
-
-        // ImageUpload
-        public ActionResult ImageUpload()
-        {
-            return null;
-        }
         [HttpPost]
         //uploadify是逐次触发Uploadify的，所以每次只有一个文件，不需要foreach，
         public JsonResult Uploadify()

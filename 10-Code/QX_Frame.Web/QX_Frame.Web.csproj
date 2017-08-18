@@ -1158,6 +1158,7 @@
     <Content Include="lib\zTree\v3\js\jquery.ztree.exedit.js" />
     <Content Include="lib\zTree\v3\js\jquery.ztree.exhide-3.5.js" />
     <Content Include="lib\zTree\v3\js\jquery.ztree.exhide-3.5.min.js" />
+    <Content Include="Scripts\ajaxfileupload.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="lib\hcharts\Highcharts\5.0.6\license.pdf" />
@@ -1226,6 +1227,8 @@
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Filter\AuthenCheckAttribute.cs" />
+    <Compile Include="Filter\ExceptionAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1266,9 +1269,9 @@
     <Content Include="Views\Article\Edit.cshtml" />
     <Content Include="Views\Article\Detail.cshtml" />
     <Content Include="Views\Article\Delete.cshtml" />
-    <Content Include="Views\Article\Edit2.cshtml" />
     <Content Include="Views\Shared\_Layout_CommonReference.cshtml" />
-    <Content Include="Views\File\ImageMgmt.cshtml" />
+    <Content Include="Views\Article\UploadImages.cshtml" />
+    <Content Include="Views\Article\ImagesMgmt.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
