@@ -61,6 +61,8 @@ namespace QX_Frame.Data.QueryObject
 
 		// 
 		public String Notice { get;set; }
+        public String NameFan { get; set; }
+        public String NameJian { get; set; }
 
 		//query condition // null default
 		public override Expression<Func<TB_Book, bool>> QueryCondition {get { return base.QueryCondition; } set { base.QueryCondition = value; } }
@@ -84,8 +86,16 @@ namespace QX_Frame.Data.QueryObject
             {
                 func = func.And(tt => tt.Title.Contains(this.Title));
             }
+            if (!string.IsNullOrEmpty(this.NameFan))
+            {
+                func = func.And(tt => tt.Title.Contains(this.NameFan));
+            }
+            if (!string.IsNullOrEmpty(this.NameJian))
+            {
+                func = func.And(tt => tt.Title.Contains(this.NameJian));
+            }
 
-			return func;
+            return func;
 		}
 	}
 }

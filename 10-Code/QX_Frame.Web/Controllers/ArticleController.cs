@@ -1,4 +1,5 @@
-﻿using QX_Frame.App.Web;
+﻿using Microsoft.VisualBasic;
+using QX_Frame.App.Web;
 using QX_Frame.Data.DTO;
 using QX_Frame.Data.Entities;
 using QX_Frame.Data.Options;
@@ -21,6 +22,7 @@ namespace QX_Frame.Web.Controllers
         {
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
+            string name = Request["name"];
 
             using (var fact = Wcf<BookService>())
             {
@@ -30,6 +32,11 @@ namespace QX_Frame.Web.Controllers
 
                 bookQuery.CategoryId = categoryId;
                 bookQuery.Title = title;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    bookQuery.NameFan = Strings.StrConv(name, VbStrConv.TraditionalChinese, 0);
+                    bookQuery.NameJian = Strings.StrConv(name, VbStrConv.SimplifiedChinese, 0);
+                }
 
                 List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
 
