@@ -84,15 +84,7 @@ namespace QX_Frame.Data.QueryObject
 
             if (!string.IsNullOrEmpty(this.Title))
             {
-                func = func.And(tt => tt.Title.Contains(this.Title));
-            }
-            if (!string.IsNullOrEmpty(this.NameFan))
-            {
-                func = func.And(tt => tt.Title.Contains(this.NameFan));
-            }
-            if (!string.IsNullOrEmpty(this.NameJian))
-            {
-                func = func.And(tt => tt.Title.Contains(this.NameJian));
+                func = func.And(tt => tt.Title.Contains(this.Title) || tt.Title.Contains(this.NameFan) || tt.Title.Contains(this.NameJian));
             }
 
             return func;
