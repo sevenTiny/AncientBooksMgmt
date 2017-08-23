@@ -27,56 +27,57 @@ namespace QX_Frame.ConsoleApp
         static void Main(string[] args)
         {
             #region Wcf Test
-            //new Config.ClassRegisters();   //register classes
-            //new Config.ConfigBootStrap();
+            new Config.ClassRegisters();   //register classes
+            new Config.ConfigBootStrap();
 
-            //using (var fact = Wcf<UserAccountService>())
-            //{
-            //    var channel = fact.CreateChannel();
-            //    List<TB_UserAccount> userAccountList = channel.QueryAll(new TB_UserAccountQueryObject()).Cast<List<TB_UserAccount>>();
-            //    foreach (var item in userAccountList)
-            //    {
-            //        Console.WriteLine($"Uid = {item.UserUid} , loginId = {item.LoginId}");
-            //    }
-            //}
+            using (var fact = Wcf<UserAccountService>())
+            {
+                var channel = fact.CreateChannel();
+                List<TB_UserAccount> userAccountList = channel.QueryAll(new TB_UserAccountQueryObject()).Cast<List<TB_UserAccount>>();
+                foreach (var item in userAccountList)
+                {
+                    Console.WriteLine($"Uid = {item.UserUid} , loginId = {item.LoginId}");
+                }
+            }
 
             #endregion
+
             #region 繁体字和简体字转换 法2
-            string value = "刘备乃中山镜王之后";
-            string newValue = Two.StringConvert(value, "1");
-            if (!string.IsNullOrEmpty(newValue))
-            {
-                Console.WriteLine(newValue);
-            }
-            string value2 = "发财";
-            string newValue2 = Two.StringConvert(value2, "1");
-            if (!string.IsNullOrEmpty(newValue2))
-            {
-                Console.WriteLine(newValue2);
-            }
-            string value3 = "头发";
-            string newValue3 = Two.StringConvert(value3, "1");
-            if (!string.IsNullOrEmpty(newValue3))
-            {
-                Console.WriteLine(newValue3);
-            }
-            string value31 = "后面";
-            string newValue31 = Two.StringConvert(value31, "1");
-            if (!string.IsNullOrEmpty(newValue31))
-            {
-                Console.WriteLine(newValue31);
-            }
-            string value1 = "媽一這是一段蕑體字";
-            string newValue1 = Two.StringConvert(value1, "2");
-            if (!string.IsNullOrEmpty(newValue1))
-            {
-                Console.WriteLine(newValue1);
-            }
+            //string value = "刘备乃中山镜王之后";
+            //string newValue = Two.StringConvert(value, "1");
+            //if (!string.IsNullOrEmpty(newValue))
+            //{
+            //    Console.WriteLine(newValue);
+            //}
+            //string value2 = "发财";
+            //string newValue2 = Two.StringConvert(value2, "1");
+            //if (!string.IsNullOrEmpty(newValue2))
+            //{
+            //    Console.WriteLine(newValue2);
+            //}
+            //string value3 = "头发";
+            //string newValue3 = Two.StringConvert(value3, "1");
+            //if (!string.IsNullOrEmpty(newValue3))
+            //{
+            //    Console.WriteLine(newValue3);
+            //}
+            //string value31 = "后面";
+            //string newValue31 = Two.StringConvert(value31, "1");
+            //if (!string.IsNullOrEmpty(newValue31))
+            //{
+            //    Console.WriteLine(newValue31);
+            //}
+            //string value1 = "媽一這是一段蕑體字";
+            //string newValue1 = Two.StringConvert(value1, "2");
+            //if (!string.IsNullOrEmpty(newValue1))
+            //{
+            //    Console.WriteLine(newValue1);
+            //}
             #endregion
 
-            string filePath = "importExcel.xlsx";
+            //string filePath = "importExcel.xlsx";
 
-            DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
+            //DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
 
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();

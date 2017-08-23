@@ -61,7 +61,7 @@
                 <!-- <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> -->
                 <a class="btn btn-primary radius" data-title="添加古籍" data-href="article-add.html" onclick="article_add('添加古籍','/Article/Add')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加古籍</a>
                 <a href="javascript:document.getElementById('fileInput').click();" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量导入</a>
-                <input id="fileInput" name="fileInput" type="file" accept="xlsx" value="" hidden="hidden">
+                <input id="fileInput" name="fileInput" type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" value="" hidden="hidden">
                 <a href="/Article/ExportArticle" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量导出</a>
             </span> <span class="r">共有数据：<strong>@count</strong> 条</span>
         </div>
@@ -71,14 +71,14 @@
                     <tr class="text-c">
                         <th width="25"><input type="checkbox" name="" value=""></th>
                         <th width="80">ID</th>
-                        <th>题名</th>
+                        <th width="120">题名</th>
                         <th width="80">其他题名</th>
-                        <th width="80">卷数</th>
-                        <th width="120">朝代</th>
-                        <th width="75">责任者</th>
-                        <th width="60">分类</th>
-                        <th width="60">版本</th>
-                        <th width="60">出版者</th>
+                        <th width="30">卷数</th>
+                        <th width="40">朝代</th>
+                        <th width="40">责任者</th>
+                        <th width="50">分类</th>
+                        <th width="40">版本</th>
+                        <th width="40">出版者</th>
                         <th width="120">操作</th>
                     </tr>
                 </thead>

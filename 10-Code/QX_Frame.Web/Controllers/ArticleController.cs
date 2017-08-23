@@ -79,6 +79,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Detail
+        [AuthenCheckAttribute(LimitCode = 0)]
         public ActionResult Detail(Guid id)
         {
             using (var fact = Wcf<BookService>())
@@ -108,8 +109,10 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Add
+        [AuthenCheckAttribute(LimitCode = 1005)]
         public ActionResult Add() => View();
 
+        [AuthenCheckAttribute(LimitCode = 1005)]
         public JsonResult AddDeal()
         {
             try
@@ -158,6 +161,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1006)]
         public JsonResult ImportArticle(HttpPostedFileBase fileInput)
         {
             try
@@ -221,46 +225,55 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1007)]
         public ActionResult ExportArticle()
         {
-            using (var fact = Wcf<BookService>())
+            try
             {
-                var channel = fact.CreateChannel();
-
-                TB_BookQueryObject bookQuery = new TB_BookQueryObject();
-                bookQuery.SqlExecuteType = App.Base.Options.ExecuteType.ExecuteDataTable;
-                bookQuery.SqlStatementTextOrSpName = "select * from TB_Book";
-
-                DataTable dt = channel.QuerySql(bookQuery).Cast<DataTable>();
-
-                string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), "AncientBooks.xlsx");
-
-                if (System.IO.File.Exists(outPutZipFile))
+                using (var fact = Wcf<BookService>())
                 {
-                    System.IO.File.Delete(outPutZipFile);
+                    var channel = fact.CreateChannel();
+
+                    TB_BookQueryObject bookQuery = new TB_BookQueryObject();
+                    bookQuery.SqlExecuteType = App.Base.Options.ExecuteType.ExecuteDataTable;
+                    bookQuery.SqlStatementTextOrSpName = "select * from TB_Book";
+
+                    DataTable dt = channel.QuerySql(bookQuery).Cast<DataTable>();
+
+                    string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), "AncientBooks.xlsx");
+
+                    if (System.IO.File.Exists(outPutZipFile))
+                    {
+                        System.IO.File.Delete(outPutZipFile);
+                    }
+
+                    Office_Helper_DG.DataTableToExcel(outPutZipFile, "sheet0", dt);
+
+                    FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
+                    long fileSize = fileStream.Length;
+                    byte[] fileBuffer = new byte[fileSize];
+                    fileStream.Read(fileBuffer, 0, (int)fileSize);
+                    //如果不写fileStream.Close()语句，用户在下载过程中选择取消，将不能再次下载
+                    fileStream.Close();
+
+                    Response.ContentType = "application/octet-stream";
+                    Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("AncientBooks.xlsx", Encoding.UTF8));
+                    Response.AddHeader("Content-Length", fileSize.ToString());
+
+                    Response.BinaryWrite(fileBuffer);
+                    Response.End();
+                    Response.Close();
                 }
-
-                Office_Helper_DG.DataTableToExcel(outPutZipFile, "sheet0",dt );
-
-                FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
-                long fileSize = fileStream.Length;
-                byte[] fileBuffer = new byte[fileSize];
-                fileStream.Read(fileBuffer, 0, (int)fileSize);
-                //如果不写fileStream.Close()语句，用户在下载过程中选择取消，将不能再次下载
-                fileStream.Close();
-
-                Response.ContentType = "application/octet-stream";
-                Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("AncientBooks.xlsx", Encoding.UTF8));
-                Response.AddHeader("Content-Length", fileSize.ToString());
-
-                Response.BinaryWrite(fileBuffer);
-                Response.End();
-                Response.Close();
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.ToString());
             }
             return null;
         }
 
         // Edit
+        [AuthenCheckAttribute(LimitCode = 1008)]
         public ActionResult Edit(Guid id)
         {
             using (var fact = Wcf<BookService>())
@@ -290,6 +303,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         //Edit plus list
+        [AuthenCheckAttribute(LimitCode = 1008)]
         public ActionResult EditSave(Guid id)
         {
             try
@@ -327,6 +341,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1009)]
         public ActionResult UploadImages(Guid id)
         {
             using (var fact = Wcf<BookService>())
@@ -355,6 +370,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode =1010)]
         public ActionResult ImagesMgmt(Guid id)
         {
             using (var fact = Wcf<BookService>())
@@ -383,6 +399,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1010)]
         public ActionResult EditImages(Guid id)
         {
             try
@@ -438,6 +455,7 @@ namespace QX_Frame.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AuthenCheckAttribute(LimitCode = 1011)]
         public JsonResult DownLoadImages(Guid id,string title)
         {
             string dirInput =Path.Combine(Server.MapPath("~/Uploads"),id.ToString());
@@ -481,6 +499,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Delete
+        [AuthenCheckAttribute(LimitCode = 1012)]
         public ActionResult Delete()
         {
             int categoryId = Request["categoryId"].ToInt();
@@ -529,6 +548,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1012)]
         public ActionResult DeleteDeal(Guid id)
         {
             using (var fact = Wcf<CmsStatusService>())
@@ -544,6 +564,7 @@ namespace QX_Frame.Web.Controllers
             return ERROR("删除失败！");
         }
 
+        [AuthenCheckAttribute(LimitCode = 1013)]
         public ActionResult ReDelete(Guid id)
         {
             using (var fact = Wcf<CmsStatusService>())

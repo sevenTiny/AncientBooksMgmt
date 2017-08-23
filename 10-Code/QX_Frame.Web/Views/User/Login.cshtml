@@ -119,6 +119,7 @@
                                 window.location = "/Home/Index";
                             }, 500);
                         } else {
+                            console.log(JSON.stringify(data));
                             $("#sp_result").html(data.msg);
                             reLoadValidateCode();
                             $("#validateCode").val("");

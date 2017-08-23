@@ -5,6 +5,7 @@ using QX_Frame.Data.QueryObject;
 using QX_Frame.Data.Service;
 using QX_Frame.Helper_DG;
 using QX_Frame.Helper_DG.Extends;
+using QX_Frame.Web.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace QX_Frame.Web.Controllers
         public ActionResult Register() => View();
 
         // List
+        [AuthenCheckAttribute(LimitCode = 1001)]
         public ActionResult List()
         {
             string uid = Request["uid"];
@@ -70,6 +72,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Detail/id
+        [AuthenCheckAttribute(LimitCode = 0)]
         public ActionResult Detail(Guid id)
         {
             using (var fact = Wcf<UserAccountService>())
@@ -88,8 +91,10 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Add
+        [AuthenCheckAttribute(LimitCode = 1014)]
         public ActionResult Add() => View();
 
+        [AuthenCheckAttribute(LimitCode = 1014)]
         public JsonResult AddDeal()
         {
             string loginId = Request["username"];
@@ -149,6 +154,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Edit
+        [AuthenCheckAttribute(LimitCode = 1002)]
         public ActionResult Edit(Guid id)
         {
             using (var fact = Wcf<UserAccountService>())
@@ -166,6 +172,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1002)]
         public ActionResult EditSave()
         {
             string uid = Request["uid"];
@@ -206,6 +213,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Delete
+        [AuthenCheckAttribute(LimitCode = 1003)]
         public ActionResult Delete()
         {
             string uid = Request["uid"];
@@ -250,6 +258,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         //Delete Deal
+        [AuthenCheckAttribute(LimitCode = 1003)]
         public ActionResult DeleteDeal(Guid id)
         {
             using (var fact = Wcf<UserRoleStatusService>())
@@ -268,6 +277,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        [AuthenCheckAttribute(LimitCode = 1015)]
         public ActionResult ReDeleteDeal(Guid id)
         {
             using (var fact = Wcf<UserRoleStatusService>())
@@ -287,6 +297,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Limit Magemen
+        [AuthenCheckAttribute(LimitCode = 1016)]
         public ActionResult LimitMgmt(Guid id)
         {
             using (var fact = Wcf<UserAccountService>())
@@ -312,6 +323,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Limit Update
+        [AuthenCheckAttribute(LimitCode = 1016)]
         public ActionResult LimitUpdate(Guid id)
         {
             string limitCode = Request["limitCode"];
@@ -338,35 +350,42 @@ namespace QX_Frame.Web.Controllers
         [HttpPost]
         public ActionResult LoginDeal()
         {
-            string account = Request["account"];
-            string password = Request["password"];
-            string validateCode = Request["validateCode"];
-            int online = Request["online"].ToInt();
-
-            if (!Cache_Helper_DG.Cache_Get("ValidateCode").ToString().ToUpper().Equals(validateCode.ToUpper()))
+            try
             {
-                return ERROR("验证码错误！");
-            }
+                string account = Request["account"];
+                string password = Request["password"];
+                string validateCode = Request["validateCode"];
+                int online = Request["online"].ToInt();
 
-            using (var fact = Wcf<UserAccountService>())
-            {
-                var channel = fact.CreateChannel();
-                TB_UserAccount userAccount = channel.QuerySingle(new TB_UserAccountQueryObject { QueryCondition = t => t.LoginId.Equals(account) }).Cast<TB_UserAccount>();
-                if (userAccount != null)
+                if (!Cache_Helper_DG.Cache_Get("ValidateCode").ToString().ToUpper().Equals(validateCode.ToUpper()))
                 {
-                    if (userAccount.Password.Equals(Encrypt_Helper_DG.MD5_Encrypt(password)))
-                    {
-                        Session["uid"] = userAccount.UserUid;
-                        Session["loginId"] = userAccount.LoginId;
-                        if (online == 1)
-                        {
-                            Cookie_Helper_DG.Add("loginId", userAccount.LoginId, DateTime.Now.AddDays(1));
-                            Cookie_Helper_DG.Add("uid", userAccount.UserUid.ToString(), DateTime.Now.AddDays(1));
-                        }
-                        return OK("登录成功！");
-                    }
+                    return ERROR("验证码错误！");
                 }
-                return ERROR("账号或密码错误！");
+
+                using (var fact = Wcf<UserAccountService>())
+                {
+                    var channel = fact.CreateChannel();
+                    TB_UserAccount userAccount = channel.QuerySingle(new TB_UserAccountQueryObject { QueryCondition = t => t.LoginId.Equals(account) }).Cast<TB_UserAccount>();
+                    if (userAccount != null)
+                    {
+                        if (userAccount.Password.Equals(Encrypt_Helper_DG.MD5_Encrypt(password)))
+                        {
+                            Session["uid"] = userAccount.UserUid;
+                            Session["loginId"] = userAccount.LoginId;
+                            if (online == 1)
+                            {
+                                Cookie_Helper_DG.Add("loginId", userAccount.LoginId, DateTime.Now.AddDays(1));
+                                Cookie_Helper_DG.Add("uid", userAccount.UserUid.ToString(), DateTime.Now.AddDays(1));
+                            }
+                            return OK("登录成功！");
+                        }
+                    }
+                    return ERROR("账号或密码错误！");
+                }
+            }
+            catch (Exception ex)
+            {
+                return ERROR(ex.ToString(), 0, 0, System.Net.HttpStatusCode.InternalServerError);
             }
         }
 
