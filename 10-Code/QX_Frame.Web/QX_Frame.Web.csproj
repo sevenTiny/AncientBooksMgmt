@@ -1208,6 +1208,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jQueryRotate.2.2.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -1274,6 +1275,7 @@
     <Content Include="Views\Shared\_Layout_CommonReference.cshtml" />
     <Content Include="Views\Article\UploadImages.cshtml" />
     <Content Include="Views\Article\ImagesMgmt.cshtml" />
+    <Content Include="Views\Article\Read.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

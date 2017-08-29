@@ -120,13 +120,13 @@
                             }, 500);
                         } else {
                             console.log(JSON.stringify(data));
-                            $("#sp_result").html(data.msg);
+                            //$("#sp_result").html(data.msg);
                             reLoadValidateCode();
                             $("#validateCode").val("");
                         }
                     },
                     error: function (data) {
-                        console.log(JSON.stringify(data));
+                        console.error(JSON.stringify(data));
                     }
                 });//end Ajax
             }
