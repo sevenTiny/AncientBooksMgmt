@@ -4,7 +4,6 @@ using QX_Frame.Data.Contract;
 using QX_Frame.Data.Entities;
 using QX_Frame.Data.QueryObject;
 using QX_Frame.Data.Service;
-using QX_Frame.Helper_DG;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

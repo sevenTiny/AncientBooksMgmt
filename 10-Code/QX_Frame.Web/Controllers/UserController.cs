@@ -3,8 +3,8 @@ using QX_Frame.Data.Entities;
 using QX_Frame.Data.Options;
 using QX_Frame.Data.QueryObject;
 using QX_Frame.Data.Service;
-using QX_Frame.Helper_DG;
-using QX_Frame.Helper_DG.Extends;
+using QX_Frame.Bantina;
+using QX_Frame.Bantina.Extends;
 using QX_Frame.Web.Filter;
 using System;
 using System.Collections.Generic;
@@ -105,7 +105,7 @@ namespace QX_Frame.Web.Controllers
 
             bool addSuccess = true;
 
-            Helper_DG.Transaction_Helper_DG.Transaction(() =>
+            Bantina.Transaction_Helper_DG.Transaction(() =>
             {
                 using (var fact = Wcf<UserAccountService>())
                 {
@@ -184,7 +184,7 @@ namespace QX_Frame.Web.Controllers
 
             bool addSuccess = true;
 
-            Helper_DG.Transaction_Helper_DG.Transaction(() =>
+            Bantina.Transaction_Helper_DG.Transaction(() =>
             {
                 using (var fact = Wcf<UserAccountService>())
                 {
