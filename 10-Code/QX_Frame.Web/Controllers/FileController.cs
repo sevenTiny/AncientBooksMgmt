@@ -41,7 +41,7 @@ namespace QX_Frame.Web.Controllers
         /// <returns></returns>
         public FileContentResult ValidateCodeImage()
         {
-            string code = String_Helper_DG.GetRandomString(4); //Code Length is four(4)
+            string code = Random_Helper_DG.GetRandomString(4); //Code Length is four(4)
             Cache_Helper_DG.Cache_Add("ValidateCode", code); //storage SecurityCode to cache
             return File(Graphic_Helper_DG.CreateValidateGraphic(code), "image/Jpeg");
         }

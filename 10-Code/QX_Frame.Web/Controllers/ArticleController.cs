@@ -484,10 +484,10 @@ namespace QX_Frame.Web.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [AuthenCheckAttribute(LimitCode = 1011)]
-        public JsonResult DownLoadImages(Guid id,string title)
+        public JsonResult DownLoadImages(Guid id, string title)
         {
-            string dirInput =Path.Combine(Server.MapPath("~/Uploads"),id.ToString());
-            string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), title+".zip");
+            string dirInput = Path.Combine(Server.MapPath("~/Uploads"), id.ToString());
+            string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), title + ".zip");
             string OutPutZipDir = Server.MapPath("~/Uploads/OutPut");
 
             if (!Directory.Exists(dirInput))
@@ -505,7 +505,7 @@ namespace QX_Frame.Web.Controllers
                     {
                         System.IO.File.Delete(item);
                     }
-                } 
+                }
             });
 
             FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
@@ -516,9 +516,51 @@ namespace QX_Frame.Web.Controllers
             fileStream.Close();
 
             Response.ContentType = "application/octet-stream";
-            Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(title+".zip", Encoding.UTF8));
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(title + ".zip", Encoding.UTF8));
             Response.AddHeader("Content-Length", fileSize.ToString());
-            
+
+            Response.BinaryWrite(fileBuffer);
+            Response.End();
+            Response.Close();
+
+            return OK("download success");
+        }
+
+        public JsonResult DownLoadImages_front(Guid id, string title)
+        {
+            string dirInput = Path.Combine(Server.MapPath("~/Uploads"), id.ToString());
+            string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), title + ".zip");
+            string OutPutZipDir = Server.MapPath("~/Uploads/OutPut");
+
+            if (!Directory.Exists(dirInput))
+            {
+                Directory.CreateDirectory(dirInput);
+            }
+
+            IO_Helper_DG.ZipDir(dirInput, outPutZipFile);
+
+            Task_Helper_DG.TaskRun(() =>
+            {
+                foreach (var item in Directory.GetFiles(OutPutZipDir))
+                {
+                    if (!item.Equals(outPutZipFile))
+                    {
+                        System.IO.File.Delete(item);
+                    }
+                }
+            });
+
+            FileStream fileStream = new FileStream(outPutZipFile, FileMode.Open);
+            long fileSize = fileStream.Length;
+            byte[] fileBuffer = new byte[fileSize];
+            fileStream.Read(fileBuffer, 0, (int)fileSize);
+            //如果不写fileStream.Close()语句，用户在下载过程中选择取消，将不能再次下载
+            fileStream.Close();
+
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(title + ".zip", Encoding.UTF8));
+            Response.AddHeader("Content-Length", fileSize.ToString());
+
             Response.BinaryWrite(fileBuffer);
             Response.End();
             Response.Close();

@@ -28,29 +28,21 @@ namespace QX_Frame.Web.Filter
                     if (this.LimitCode!=default(int))
                     {
                         string[] limitCodes = userAuthenCodes.UserLimitCodes.Split(',');
-                        if (limitCodes.FirstOrDefault(t => t.Equals(this.LimitCode.ToString())) != null)
-                        {
-                            base.OnActionExecuting(filterContext);
-                        }
-                        else
+                        if (limitCodes.FirstOrDefault(t => t.Equals(this.LimitCode.ToString())) == null)
                         {
                             filterContext.Result = new ContentResult { Content = "<script>alert('您没有权限！')</script>" };
                         }
                     }
-
                     if (this.DisplayCode!=default(int))
                     {
                         string[] displayCodes = userAuthenCodes.UserDisplayCodes.Split(',');
-                        if (displayCodes.FirstOrDefault(t => t.Equals(this.DisplayCode.ToString())) != null)
-                        {
-                            base.OnActionExecuting(filterContext);
-                        }
-                        else
+                        if (displayCodes.FirstOrDefault(t => t.Equals(this.DisplayCode.ToString())) == null)
                         {
                             filterContext.Result = new ContentResult { Content = "<script>alert('您没有权限！')</script>" };
                         }
                     }
                 }
+                base.OnActionExecuting(filterContext);
             }
             else
             {

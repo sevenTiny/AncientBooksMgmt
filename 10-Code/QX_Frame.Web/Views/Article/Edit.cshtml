@@ -93,7 +93,7 @@
 </div>  
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
-<script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>
+@*<script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>*@
 
 <script type="text/javascript">
 
@@ -146,9 +146,8 @@
                             self.message = data.msg;
                             layer.msg('修改成功!', { icon: 6, time: 1000 });
                         } else {
-                            console.log(data.msg);
+                            console.log(JSON.stringify(data));
                         }
-                        self.message = data.msg;
                     },
                     error: function (data) {
                         console.log(JSON.stringify(data));
