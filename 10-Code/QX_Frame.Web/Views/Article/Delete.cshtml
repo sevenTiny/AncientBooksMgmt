@@ -4,7 +4,8 @@
 }
 @using QX_Frame.Data.DTO;
 @{
-    List<BookViewModel> bookList = Model as List<BookViewModel>;
+    BookCategoryViewModel bookCategoryViewModel = Model as BookCategoryViewModel;
+    List<BookViewModel> bookList = bookCategoryViewModel.BookViewModelList;
     int count = bookList.Count;
 }
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 古籍中心 <span class="c-gray en">&gt;</span> 删除的古籍<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -13,9 +14,12 @@
         <form action="/Article/Delete">
             <span class="select-box inline">
                 <select name="categoryId" class="select">
-                    <option value="0">全部分类</option>
-                    <option value="1">分类一</option>
-                    <option value="2">分类二</option>
+                    @{
+                        foreach (var item in bookCategoryViewModel.CategoryList)
+                        {
+                            <option value="@item.CategoryId">@item.CategoryName</option>
+                        }
+                    }
                 </select>
             </span>
             <input type="text" name="title" id="title" placeholder=" 古籍名称" style="width:250px" class="input-text">

@@ -1227,6 +1227,7 @@
     <Compile Include="Config\ClassRegisters.cs" />
     <Compile Include="Config\ConfigBootStrap.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -1276,6 +1277,7 @@
     <Content Include="Views\Article\UploadImages.cshtml" />
     <Content Include="Views\Article\ImagesMgmt.cshtml" />
     <Content Include="Views\Article\Read.cshtml" />
+    <Content Include="Views\Category\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

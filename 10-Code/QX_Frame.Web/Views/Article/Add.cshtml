@@ -2,6 +2,11 @@
     Layout = "~/Views/Shared/_Layout_CommonReference.cshtml";
     ViewBag.Title = "新增文章";
 }
+@using QX_Frame.Data.Entities;
+@{ 
+    List<TB_Category> categoryList = Model as List<TB_Category>;
+
+}
 <link href="~/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
 <div class="page-container" id="app">
     <form class="form form-horizontal" id="form-article-add">
@@ -22,9 +27,12 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select name="articletype" class="select" v-model="CategoryId">
-                        <option value="1">全部类型</option>
-                        <option value="2">帮助说明</option>
-                        <option value="3">新闻古籍</option>
+                        @{
+                            foreach (var item in categoryList)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        }
                     </select>
                 </span>
             </div>

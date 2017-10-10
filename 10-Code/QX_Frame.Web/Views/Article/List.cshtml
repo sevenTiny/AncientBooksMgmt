@@ -4,7 +4,8 @@
 }
 @using QX_Frame.Data.DTO;
 @{
-    List<BookViewModel> bookList = Model as List<BookViewModel>;
+    BookCategoryViewModel bookCategoryViewModel = Model as BookCategoryViewModel;
+    List<BookViewModel> bookList = bookCategoryViewModel.BookViewModelList;
     int count = bookList.Count;
 }
 <!DOCTYPE HTML>
@@ -43,9 +44,12 @@
                 <!-- <button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button> -->
                 <span class="select-box inline">
                     <select name="categoryId" class="select">
-                        <option value="0">全部分类</option>
-                        <option value="1">分类一</option>
-                        <option value="2">分类二</option>
+                        @{
+                            foreach (var item in bookCategoryViewModel.CategoryList)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        }
                     </select>
                 </span>
                 <!-- 日期范围：
@@ -88,7 +92,7 @@
                         {
                             <tr class="text-c">
                                 <td><input type="checkbox" value="" name=""></td>
-                                <td>@item.BookUid</td>
+                                <td>@(bookList.IndexOf(item))</td>
                                 <td class="text-l">
                                     <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','/Article/Detail/@item.BookUid','10001')" title="查看">@item.Title</u>
                                 </td>

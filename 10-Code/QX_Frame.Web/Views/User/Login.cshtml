@@ -24,9 +24,9 @@
     <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>后台登录 - QX人力资源管理系统 1.0</title>
-    <meta name="keywords" content="后台登录 - QX人力资源管理系统 1.0">
-    <meta name="description" content="QX人力资源管理系统 1.0">
+    <title>后台登录 - 古籍管理系统 1.0</title>
+    <meta name="keywords" content="后台登录 - 古籍管理系统 1.0">
+    <meta name="description" content="古籍管理系统 1.0">
 </head>
 <body>
     <input type="hidden" id="TenantId" name="TenantId" value="" />
@@ -76,7 +76,7 @@
             </form>
         </div>
     </div>
-    <div class="footer">Copyright QX人力资源管理系统 1.0</div>
+    <div class="footer">Copyright 古籍管理系统 1.0</div>
     <script src="~/Scripts/jquery-3.2.0.min.js"></script>
     <script src="~/H-ui/h-ui/js/H-ui.min.js"></script>
 
@@ -110,7 +110,7 @@
                         "online": $("#online").val(),
                     },
                     beforeSend: function () {
-
+                        $("#sp_result").html("正在登录...");
                     },
                     success: function (data) {
                         if (data.isSuccess) {
@@ -126,6 +126,7 @@
                         }
                     },
                     error: function (data) {
+                        $("#sp_result").html("登录失败，请重试!");
                         console.error(JSON.stringify(data));
                     }
                 });//end Ajax

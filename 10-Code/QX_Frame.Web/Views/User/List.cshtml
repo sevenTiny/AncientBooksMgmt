@@ -48,7 +48,7 @@
                     {
                         <tr class="text-c">
                             <td><input type="checkbox" value="1" name=""></td>
-                            <td>@item.UserUid</td>
+                            <td>@userViewModelList.IndexOf(item)</td>
                             <td>@item.LoginId</td>
                             <td><u style="cursor:pointer" class="text-primary" onclick="member_show('@item.Name','/User/Detail/@item.UserUid','10001','360','400')">@item.Name</u></td>
                             <td class="td-status"><span class="label label-success radius">正常</span></td>

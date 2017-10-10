@@ -16,14 +16,15 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using QX_Frame.Data.Configs;
 
 namespace QX_Frame.Web.Controllers
 {
     public class ArticleController : WebControllerBase
     {
-        
+
         // 古籍列表查看 1004
-        [AuthenCheckAttribute(LimitCode =1004)]
+        [AuthenCheckAttribute(LimitCode = 1004)]
         public ActionResult List()
         {
             int categoryId = Request["categoryId"].ToInt();
@@ -44,6 +45,8 @@ namespace QX_Frame.Web.Controllers
                 }
 
                 List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
+
+                BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
 
                 List<BookViewModel> bookViewList = new List<BookViewModel>();
 
@@ -74,7 +77,12 @@ namespace QX_Frame.Web.Controllers
                     }
                 }
 
-                return View(bookViewList);
+                bookCategoryViewModel.BookViewModelList = bookViewList;
+
+                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                bookCategoryViewModel.CategoryList = categoryList;
+
+                return View(bookCategoryViewModel);
             }
         }
 
@@ -138,7 +146,15 @@ namespace QX_Frame.Web.Controllers
 
         // Add
         [AuthenCheckAttribute(LimitCode = 1005)]
-        public ActionResult Add() => View();
+        public ActionResult Add()
+        {
+            using (var fact = Wcf<CategoryService>())
+            {
+                var channel = fact.CreateChannel();
+                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                return View(categoryList);
+            }
+        }
 
         [AuthenCheckAttribute(LimitCode = 1005)]
         public JsonResult AddDeal()
@@ -210,6 +226,8 @@ namespace QX_Frame.Web.Controllers
                         var channel = fact.CreateChannel();
                         var channel_cms = fact_cms.CreateChannel();
 
+                        List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+
                         DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
 
                         bool isSuccess = true;
@@ -222,7 +240,15 @@ namespace QX_Frame.Web.Controllers
                                 book.Title2 = row[1].ToString();
                                 book.Volume = row[2].ToInt();
                                 book.Dynasty = row[3].ToString();
-                                book.CategoryId = row[4].ToInt();
+                                int categoryId = row[4].ToInt();
+                                if (categoryList.Count(t => t.CategoryId == categoryId) > 0)
+                                {
+                                    book.CategoryId = categoryId;
+                                }
+                                else
+                                {
+                                    book.CategoryId = categoryList.FirstOrDefault().CategoryId;
+                                }
                                 book.Functionary = row[5].ToString();
                                 book.Publisher = row[6].ToString();
                                 book.Version = row[7].ToString();
@@ -263,6 +289,7 @@ namespace QX_Frame.Web.Controllers
                     var channel = fact.CreateChannel();
 
                     TB_BookQueryObject bookQuery = new TB_BookQueryObject();
+                    bookQuery.SqlConnectionString = QX_Frame_Data_Config.ConnectionString_DB_QX_Frame_CMS;
                     bookQuery.SqlExecuteType = App.Base.Options.ExecuteType.ExecuteDataTable;
                     bookQuery.SqlStatementTextOrSpName = "select * from TB_Book";
 
@@ -309,6 +336,8 @@ namespace QX_Frame.Web.Controllers
                 var channel = fact.CreateChannel();
                 TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
 
+
+
                 BookViewModel bookViewModel = new BookViewModel();
 
                 bookViewModel.BookUid = book.BookUid;
@@ -326,7 +355,12 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.ImageUris = book.ImageUris;
                 bookViewModel.Notice = book.Notice;
 
-                return View(bookViewModel);
+                BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+                bookCategoryViewModel.BookViewModel = bookViewModel;
+                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                bookCategoryViewModel.CategoryList = categoryList;
+
+                return View(bookCategoryViewModel);
             }
         }
 
@@ -398,7 +432,7 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
-        [AuthenCheckAttribute(LimitCode =1010)]
+        [AuthenCheckAttribute(LimitCode = 1010)]
         public ActionResult ImagesMgmt(Guid id)
         {
             using (var fact = Wcf<BookService>())
@@ -586,6 +620,8 @@ namespace QX_Frame.Web.Controllers
 
                 List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
 
+                BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+
                 List<BookViewModel> bookViewList = new List<BookViewModel>();
 
                 foreach (var item in bookList)
@@ -613,6 +649,12 @@ namespace QX_Frame.Web.Controllers
                         bookViewList.Add(bookViewModel);
                     }
                 }
+                bookCategoryViewModel.BookViewModelList = bookViewList;
+
+                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                bookCategoryViewModel.CategoryList = categoryList;
+
+                return View(bookCategoryViewModel);
 
                 return View(bookViewList);
             }

@@ -32,7 +32,7 @@ namespace QX_Frame.Data.Entities
 
 		// PK（identity）  
 		[Key]
-		public Guid BookUid { get;set; }
+		public Guid BookUid { get; set; } = Guid.NewGuid();
 		// 
 		[Column]
 		public String Title { get;set; }
@@ -49,8 +49,8 @@ namespace QX_Frame.Data.Entities
 		[Column]
 		public Int32 CategoryId { get;set; }
 
-        [ForeignTable(ForeignKeyFieldName = "CategoryId")]
-        public TB_Category TB_Category { get; set; }
+		[ForeignTable(ForeignKeyFieldName = "CategoryId")]
+		public TB_Category TB_Category { get; set; }
 		// 
 		[Column]
 		public String Functionary { get;set; }
@@ -68,7 +68,7 @@ namespace QX_Frame.Data.Entities
 		public String FromAF49 { get;set; }
 		// 
 		[Column]
-		public String ImageUris { get;set; }
+		public String ImageUris { get; set; } = "";
 		// 
 		[Column]
 		public String Notice { get;set; }

@@ -377,7 +377,7 @@ namespace QX_Frame.Web.Controllers
                                 Cookie_Helper_DG.Add("loginId", userAccount.LoginId, DateTime.Now.AddDays(1));
                                 Cookie_Helper_DG.Add("uid", userAccount.UserUid.ToString(), DateTime.Now.AddDays(1));
                             }
-                            return OK("登录成功！");
+                            return OK("登录成功！自动跳转中...");
                         }
                     }
                     return ERROR("账号或密码错误！");
