@@ -164,7 +164,7 @@ namespace QX_Frame.Web.Controllers
                 TB_Book book = new TB_Book();
                 book.Title = Request["Title"];
                 book.Title2 = Request["Title2"];
-                book.Volume = Request["Volume"].ToInt();
+                book.Volume = Request["Volume"];
                 book.Dynasty = Request["Dynasty"];
                 book.CategoryId = Request["CategoryId"].ToInt();
                 book.Functionary = Request["Functionary"];
@@ -206,7 +206,7 @@ namespace QX_Frame.Web.Controllers
         }
 
         [AuthenCheckAttribute(LimitCode = 1006)]
-        public JsonResult ImportArticle(HttpPostedFileBase fileInput)
+        public ActionResult ImportArticle(HttpPostedFileBase fileInput)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace QX_Frame.Web.Controllers
                                 TB_Book book = new TB_Book();
                                 book.Title = row[0].ToString();
                                 book.Title2 = row[1].ToString();
-                                book.Volume = row[2].ToInt();
+                                book.Volume = row[2].ToString();
                                 book.Dynasty = row[3].ToString();
                                 int categoryId = row[4].ToInt();
                                 if (categoryList.Count(t => t.CategoryId == categoryId) > 0)
@@ -268,14 +268,15 @@ namespace QX_Frame.Web.Controllers
                         }
                         else
                         {
-                            return ERROR("添加失败!");
+                            //return ERROR("添加失败!");
+                           return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                return ERROR("导入失败！");
+                return new ContentResult { Content = "<script>alert('导入失败，请检查您的导入模板！')</script>" };
             }
         }
 
@@ -376,7 +377,7 @@ namespace QX_Frame.Web.Controllers
                     TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
                     book.Title = Request["Title"];
                     book.Title2 = Request["Title2"];
-                    book.Volume = Request["Volume"].ToInt();
+                    book.Volume = Request["Volume"];
                     book.Dynasty = Request["Dynasty"];
                     book.CategoryId = Request["CategoryId"].ToInt();
                     book.Functionary = Request["Functionary"];

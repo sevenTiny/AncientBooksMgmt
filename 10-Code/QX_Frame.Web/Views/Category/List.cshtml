@@ -39,11 +39,13 @@
             </thead>
             <tbody>
                 @{
+                    int index = 0;
                     foreach (var item in categoryList)
                     {
+                        index++;
                         <tr class="text-c">
                             <td><input type="checkbox" value="1" name=""></td>
-                            <td>@categoryList.IndexOf(item)</td>
+                            <td>@index</td>
                             <td><span>@item.CategoryName</span><input type="text" value="@item.CategoryName" hidden="hidden"></td>
                             <td class="td-manage">
                                 @{
@@ -53,7 +55,7 @@
                                     }
                                     else
                                     {
-                                        <span hidden="hidden"><a href="javascript:;" onclick="categoryEditSubmit(event.target,'@item.CategoryId')" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i>确定</a></span>
+                                        <span hidden="hidden"><a href="javascript:;" onclick="categoryEditSubmit(event.target,'@item.CategoryId')" class="btn btn-success radius">确定</a></span>
                                         <a title="编辑" href="javascript:;" onclick="categoryEdit(event.target)" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
                                         <a title="删除" href="javascript:member_del(this,'@item.CategoryId');" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
                                     }

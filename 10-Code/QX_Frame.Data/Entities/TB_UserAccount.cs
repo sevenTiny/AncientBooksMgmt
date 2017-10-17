@@ -33,17 +33,17 @@ namespace QX_Frame.Data.Entities
 		// PK（identity）  User UID
 		[Key]
 		public Guid UserUid { get;set; }
-		// 登录名
-		[Column]
-		public String LoginId { get;set; }
+        // 登录名
+        [Column]
+        public String LoginId { get; set; } = "";
 		// 用户密码 MD5方式加密
 		[Column]
-		public String Password { get;set; }
+		public String Password { get;set; }="";
 		// 邮箱
 		[Column]
-		public String Email { get;set; }
-		// 电话号码
-		[Column]
-		public String Tel { get;set; }
+		public String Email { get;set; } = "";
+        // 电话号码
+        [Column]
+        public String Tel { get; set; } = "";
 	}
 }

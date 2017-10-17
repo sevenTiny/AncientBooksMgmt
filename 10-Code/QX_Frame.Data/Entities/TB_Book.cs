@@ -35,16 +35,16 @@ namespace QX_Frame.Data.Entities
 		public Guid BookUid { get; set; } = Guid.NewGuid();
 		// 
 		[Column]
-		public String Title { get;set; }
+		public String Title { get;set; } = "";
 		// 
 		[Column]
-		public String Title2 { get;set; }
+		public String Title2 { get;set; } = "";
 		// 
 		[Column]
-		public Int32 Volume { get;set; }
+		public String Volume { get;set; } = "";
 		// 
 		[Column]
-		public String Dynasty { get;set; }
+		public String Dynasty { get;set; } = "";
 		// 
 		[Column]
 		public Int32 CategoryId { get;set; }
@@ -53,24 +53,24 @@ namespace QX_Frame.Data.Entities
 		public TB_Category TB_Category { get; set; }
 		// 
 		[Column]
-		public String Functionary { get;set; }
+		public String Functionary { get;set; } = "";
 		// 
 		[Column]
-		public String Publisher { get;set; }
+		public String Publisher { get;set; } = "";
 		// 
 		[Column]
-		public String Version { get;set; }
+		public String Version { get;set; } = "";
 		// 
 		[Column]
-		public String FromBF49 { get;set; }
+		public String FromBF49 { get;set; } = "";
 		// 
 		[Column]
-		public String FromAF49 { get;set; }
+		public String FromAF49 { get;set; } = "";
 		// 
 		[Column]
 		public String ImageUris { get; set; } = "";
 		// 
 		[Column]
-		public String Notice { get;set; }
+		public String Notice { get;set; } = "";
 	}
 }

@@ -88,11 +88,14 @@
                 </thead>
                 <tbody>
                     @{
+                        int index = 0;
                         foreach (var item in bookList)
                         {
+                            index++;
                             <tr class="text-c">
                                 <td><input type="checkbox" value="" name=""></td>
-                                <td>@(bookList.IndexOf(item))</td>
+                                @*<td>@(bookList.IndexOf(item) + 1)</td>*@
+                                <td>@index</td>
                                 <td class="text-l">
                                     <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','/Article/Detail/@item.BookUid','10001')" title="查看">@item.Title</u>
                                 </td>
@@ -257,7 +260,6 @@
 
     </script>
     <!--_footer 作为公共模版分离出去-->
-
     @*<script type="text/javascript" src="~/lib/jquery/1.9.1/jquery.min.js"></script>*@
     <script type="text/javascript" src="~/lib/layer/2.4/layer.js"></script>
     <script type="text/javascript" src="~/H-ui/h-ui/js/H-ui.min.js"></script>

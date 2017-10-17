@@ -33,7 +33,7 @@ namespace QX_Frame.Data.QueryObject
 		public String Title2 { get;set; }
 
 		// 
-		public Int32 Volume { get;set; }
+		public String Volume { get;set; }
 
 		// 
 		public String Dynasty { get;set; }
@@ -61,8 +61,8 @@ namespace QX_Frame.Data.QueryObject
 
 		// 
 		public String Notice { get;set; }
-        public String NameFan { get; set; }
-        public String NameJian { get; set; }
+		public String NameFan { get; set; }
+		public String NameJian { get; set; }
 
 		//query condition // null default
 		public override Expression<Func<TB_Book, bool>> QueryCondition {get { return base.QueryCondition; } set { base.QueryCondition = value; } }
@@ -77,17 +77,17 @@ namespace QX_Frame.Data.QueryObject
 				func = func.And(t => true);
 			}
 
-            if (this.CategoryId>1)
-            {
-                func = func.And(tt => tt.CategoryId == this.CategoryId);
-            }
+			if (this.CategoryId>1)
+			{
+				func = func.And(tt => tt.CategoryId == this.CategoryId);
+			}
 
-            if (!string.IsNullOrEmpty(this.Title))
-            {
-                func = func.And(tt => tt.Title.Contains(this.Title) || tt.Title.Contains(this.NameFan) || tt.Title.Contains(this.NameJian));
-            }
+			if (!string.IsNullOrEmpty(this.Title))
+			{
+				func = func.And(tt => tt.Title.Contains(this.Title) || tt.Title.Contains(this.NameFan) || tt.Title.Contains(this.NameJian));
+			}
 
-            return func;
+			return func;
 		}
 	}
 }

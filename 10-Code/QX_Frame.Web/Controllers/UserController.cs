@@ -61,10 +61,14 @@ namespace QX_Frame.Web.Controllers
                     userViewModel.Name = item.NickName;
                     userViewModel.LimitCode = channel.QuerySingle(new TB_UserAuthenCodesQueryObject { QueryCondition = t => t.UserUid == item.UserUid }).Cast<TB_UserAuthenCodes>().UserLimitCodes;
 
-                    //判断账号状态是否正常
-                    if (channel.QuerySingle(new TB_UserRoleStatusQueryObject { QueryCondition = t => t.UserUid == item.UserUid }).Cast<TB_UserRoleStatus>().StatusId == opt_UserStatus.NORMAL.ToInt())
+                    TB_UserRoleStatus userRoleStatus = channel.QuerySingle(new TB_UserRoleStatusQueryObject { QueryCondition = t => t.UserUid == item.UserUid }).Cast<TB_UserRoleStatus>();
+                    if (userRoleStatus != null)
                     {
-                        userViewModelList.Add(userViewModel);
+                        //判断账号状态是否正常
+                        if (userRoleStatus.StatusId == opt_UserStatus.NORMAL.ToInt())
+                        {
+                            userViewModelList.Add(userViewModel);
+                        }
                     }
                 }
                 return View(userViewModelList);
@@ -115,12 +119,15 @@ namespace QX_Frame.Web.Controllers
                     {
                         addSuccess = false;
                     }
-                    channel.Add(new TB_UserAccount
+                    else
                     {
-                        UserUid = uid,
-                        LoginId = loginId,
-                        Password = Encrypt_Helper_DG.MD5_Encrypt(pwd)
-                    });
+                        channel.Add(new TB_UserAccount
+                        {
+                            UserUid = uid,
+                            LoginId = loginId,
+                            Password = Encrypt_Helper_DG.MD5_Encrypt(pwd)
+                        });
+                    }
                 }
                 using (var fact = Wcf<UserInfoService>())
                 {
@@ -141,6 +148,16 @@ namespace QX_Frame.Web.Controllers
                         UserUid = uid,
                         UserLimitCodes = "",
                         UserDisplayCodes = ""
+                    });
+                }
+                using (var fact = Wcf<UserRoleStatusService>())
+                {
+                    var channel = fact.CreateChannel();
+                    addSuccess = addSuccess && channel.Add(new TB_UserRoleStatus
+                    {
+                        UserUid = uid,
+                        StatusId = opt_UserStatus.NORMAL.ToInt(),
+                        RoleId = opt_UserRole.USER.ToInt()
                     });
                 }
             });

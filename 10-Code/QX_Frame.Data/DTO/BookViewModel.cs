@@ -18,7 +18,7 @@ namespace QX_Frame.Data.DTO
         public String Title2 { get; set; }
 
         // 
-        public Int32 Volume { get; set; }
+        public string Volume { get; set; }
 
         // 
         public String Dynasty { get; set; }

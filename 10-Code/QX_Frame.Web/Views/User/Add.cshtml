@@ -133,12 +133,14 @@
                         if (data.isSuccess) {
                             self.message = data.msg;
                             layer.msg('添加成功!', { icon: 6, time: 1000 });
+                            document.getElementById("form-member-add").reset();
                         } else {
-                            
+                            layer.msg('添加失败，请稍后重试!', { icon: 6, time: 1000 });
                         }
                         self.message = data.msg;
                     },
                     error: function (data) {
+                        layer.msg('添加失败，请稍后重试!', { icon: 6, time: 1000 });
                         console.log(JSON.stringify(data));
                     }
                 });//end Ajax
