@@ -23,6 +23,8 @@ namespace QX_Frame.Web.Controllers
             if (uploadfile != null && uploadfile.ContentLength > 0)
             {
                 var fileName = Path.GetFileName(uploadfile.FileName);
+                //string appPath=IO_Helper_DG.AppSetting_Get("path");
+                //string folder = Path.Combine(appPath, "Uploads/", folderName);
                 string folder = Path.Combine(Server.MapPath("~/Uploads/"), folderName);
                 var path = Path.Combine(folder, fileName);
                 if (!System.IO.Directory.Exists(folder))

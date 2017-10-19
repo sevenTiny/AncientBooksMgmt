@@ -6,6 +6,7 @@
 @{
     BookViewModel bookViewModel = Model as BookViewModel;
     string[] imgUris = bookViewModel.ImageUris;
+    string imgUrisString = String.Join(",",imgUris);
 }
 <div class="cl pd-20" style=" background-color:#5bacb6">
     <!-- <img class="avatar size-XL l" src="static/h-ui/images/ucnter/avatar-default.jpg"> -->
@@ -18,7 +19,7 @@
     </dl>
 </div>
 <div class="pd-20">
-    <input id="hidden_imgUris" type="hidden" value="@bookViewModel.ImageUris" />
+    <input id="hidden_imgUris" type="hidden" value="@imgUrisString" />
     <table class="table">
         <tbody>
             <tr>

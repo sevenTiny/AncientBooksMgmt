@@ -172,7 +172,7 @@ namespace QX_Frame.Web.Controllers
                 book.Version = Request["Version"];
                 book.FromBF49 = Request["FromBF49"];
                 book.FromAF49 = Request["FromAF49"];
-                //book.ImageUris = Request["ImageUris"];
+                book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
                 book.Notice = Request["Notice"];
 
                 bool isSuccess = true;
@@ -254,7 +254,7 @@ namespace QX_Frame.Web.Controllers
                                 book.Version = row[7].ToString();
                                 book.FromBF49 = row[8].ToString();
                                 book.FromAF49 = row[9].ToString();
-                                //book.ImageUris = Request["ImageUris"];
+                                book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
                                 book.Notice = row[10].ToString();
                                 isSuccess = isSuccess && channel.Add(book);
 
@@ -466,7 +466,7 @@ namespace QX_Frame.Web.Controllers
 
         private string[] GetImageNamesFromFolder(string folderName)
         {
-            string folder = Server.MapPath($"~/Uploads/{folderName}");
+            string folder = Path.Combine(Server.MapPath("~/Uploads/"), folderName);
 
             DirectoryInfo dir = new DirectoryInfo(folder);
             if (dir.Exists)
