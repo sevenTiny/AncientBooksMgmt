@@ -43,8 +43,11 @@ namespace QX_Frame.Data.DTO
         // 
         public String FromAF49 { get; set; }
 
-        // 
-        public String ImageUris { get; set; }
+        // folder name
+        public String[] ImageUris { get; set; }
+
+        //imgsName
+        public string[] ImageNames { get; set; }
 
         // 
         public String Notice { get; set; }

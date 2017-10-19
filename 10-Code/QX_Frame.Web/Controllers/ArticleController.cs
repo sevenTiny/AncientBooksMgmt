@@ -70,7 +70,7 @@ namespace QX_Frame.Web.Controllers
                         bookViewModel.Version = item.Version;
                         bookViewModel.FromBF49 = item.FromBF49;
                         bookViewModel.FromAF49 = item.FromAF49;
-                        bookViewModel.ImageUris = item.ImageUris;
+                        //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
                         bookViewModel.Notice = item.Notice;
 
                         bookViewList.Add(bookViewModel);
@@ -109,7 +109,7 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.Version = book.Version;
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
-                bookViewModel.ImageUris = book.ImageUris;
+                bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
 
                 return View(bookViewModel);
@@ -137,7 +137,7 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.Version = book.Version;
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
-                bookViewModel.ImageUris = book.ImageUris;
+                bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
 
                 return View(bookViewModel);
@@ -269,7 +269,7 @@ namespace QX_Frame.Web.Controllers
                         else
                         {
                             //return ERROR("添加失败!");
-                           return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
+                            return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
                         }
                     }
                 }
@@ -353,7 +353,7 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.Version = book.Version;
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
-                bookViewModel.ImageUris = book.ImageUris;
+                //bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
 
                 BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
@@ -426,7 +426,7 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.Version = book.Version;
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
-                bookViewModel.ImageUris = book.ImageUris;
+                bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
 
                 return View(bookViewModel);
@@ -455,62 +455,128 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.Version = book.Version;
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
-                bookViewModel.ImageUris = book.ImageUris;
                 bookViewModel.Notice = book.Notice;
+
+                bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
+                bookViewModel.ImageNames = GetImageNamesFromFolder(id.ToString());
 
                 return View(bookViewModel);
             }
         }
 
+        private string[] GetImageNamesFromFolder(string folderName)
+        {
+            string folder = Server.MapPath($"~/Uploads/{folderName}");
+
+            DirectoryInfo dir = new DirectoryInfo(folder);
+            if (dir.Exists)
+            {
+                FileInfo[] files = dir.GetFiles();
+                string[] imgNames = files.Select(t => t.Name).ToArray();
+                return imgNames;
+            }
+
+            return new string[0];
+        }
+
+        private string[] GetImageUrisFromFolder(string folderName)
+        {
+
+            string[] imgNames = GetImageNamesFromFolder(folderName);
+            string[] imgUris = new string[imgNames.Length];
+
+            for (int i = 0; i < imgNames.Length; i++)
+            {
+                imgUris[i] = $"/Uploads/{folderName}/{imgNames[i]}";
+            }
+            return imgUris;
+        }
+
         [AuthenCheckAttribute(LimitCode = 1010)]
-        public ActionResult EditImages(Guid id)
+        public ActionResult ImageDelete(Guid id)
         {
             try
             {
-                using (var fact = Wcf<BookService>())
-                {
-                    var channel = fact.CreateChannel();
-                    TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+                string imgName = Request["imgName"];
+                string file = Path.Combine(Server.MapPath($"~/Uploads/{id}"), imgName);
+                if (System.IO.File.Exists(file))
+                    System.IO.File.Delete(file);
 
-                    string[] oldImagesArray = book.ImageUris.Split(',');
-
-                    string imgUris = Request["ImageUris"];
-
-                    book.ImageUris = imgUris.Replace("\\", "/");
-
-                    string[] newImagesArray = book.ImageUris.Split(',');
-
-                    string[] imagesArrayDelete = oldImagesArray.Except(newImagesArray).ToArray();
-
-                    if (channel.Update(book))
-                    {
-                        Task_Helper_DG.TaskRun(() =>
-                        {
-                            foreach (var item in imagesArrayDelete)
-                            {
-                                if (item.Length > 3)
-                                {
-                                    string serverName = Server.MapPath("~/");
-                                    string fileName = item.Substring(1, item.Length - 1);
-                                    fileName = serverName + fileName;
-                                    fileName = Path.GetFullPath(fileName);
-                                    if (System.IO.File.Exists(fileName))
-                                        System.IO.File.Delete(fileName);
-                                }
-                            }
-                        });
-                        return OK("修改成功!");
-                    }
-                    else
-                    {
-                        return ERROR("修改失败!");
-                    }
-                }
+                return OK("删除成功！");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return ERROR(ex.ToString());
+                return OK("删除失败！");
             }
+
+        }
+
+        [AuthenCheckAttribute(LimitCode = 1010)]
+        public ActionResult EditImages(Guid id)
+        {
+            return OK("修改成功!");
+            //try
+            //{
+            //    using (var fact = Wcf<BookService>())
+            //    {
+            //        var channel = fact.CreateChannel();
+            //        TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+
+            //string[] oldImagesArray = book.ImageUris.Split(',');
+
+            //string imgUris = Request["ImageUris"];
+
+            //book.ImageUris = imgUris.Replace("\\", "/");
+
+            //string[] newImagesArray = book.ImageUris.Split(',');
+
+            //string[] imagesArrayDelete = oldImagesArray.Except(newImagesArray).ToArray();
+
+            //if (channel.Update(book))
+            //{
+            //    Task_Helper_DG.TaskRun(() =>
+            //    {
+            //        foreach (var item in imagesArrayDelete)
+            //        {
+            //            if (item.Length > 3)
+            //            {
+            //                string serverName = Server.MapPath("~/");
+            //                string fileName = item.Substring(1, item.Length - 1);
+            //                fileName = serverName + fileName;
+            //                fileName = Path.GetFullPath(fileName);
+            //                if (System.IO.File.Exists(fileName))
+            //                    System.IO.File.Delete(fileName);
+            //            }
+            //        }
+            //    });
+            //    return OK("修改成功!");
+            //}
+            //else
+            //{
+            //    return ERROR("修改失败!");
+            //}
+
+
+            //2017-10-19 14:50:04 update
+            //        string imgUris = Request["ImageUris"];
+
+            //        book.ImageUris = Path.Combine("/Uploads/", imgUris);
+
+
+            //        if (channel.Update(book))
+            //        {
+            //            return OK("修改成功!");
+            //        }
+            //        else
+            //        {
+            //            return ERROR("修改失败!");
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ERROR(ex.ToString());
+            //}
         }
 
         /// <summary>
@@ -644,7 +710,7 @@ namespace QX_Frame.Web.Controllers
                         bookViewModel.Version = item.Version;
                         bookViewModel.FromBF49 = item.FromBF49;
                         bookViewModel.FromAF49 = item.FromAF49;
-                        bookViewModel.ImageUris = item.ImageUris;
+                        //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
                         bookViewModel.Notice = item.Notice;
 
                         bookViewList.Add(bookViewModel);

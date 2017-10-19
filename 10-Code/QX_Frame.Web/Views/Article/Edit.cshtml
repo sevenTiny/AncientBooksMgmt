@@ -6,7 +6,7 @@
 @{
     BookCategoryViewModel bookCategoryViewModel = Model as BookCategoryViewModel;
     BookViewModel bookViewModel = bookCategoryViewModel.BookViewModel;
-    string[] imgUris = bookViewModel.ImageUris.Split(',');
+    string[] imgUris = bookViewModel.ImageUris;
 }
 <div class="page-container" id="app">
     <form class="form form-horizontal" id="form-article-add">

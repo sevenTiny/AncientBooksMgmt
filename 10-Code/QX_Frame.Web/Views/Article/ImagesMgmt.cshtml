@@ -6,9 +6,7 @@
 @using QX_Frame.Data.DTO;
 @{
     BookViewModel bookViewModel = Model as BookViewModel;
-    string[] imgUris = bookViewModel.ImageUris.Split(',');
-    int imgCount = string.IsNullOrEmpty(bookViewModel.ImageUris) == true ? 0 : imgUris.Count();
-    int picIndex = 0;
+    int imgCount = bookViewModel.ImageUris.Length;
 }
 <link href="~/lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet" type="text/css">
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 图片管理 <span class="c-gray en">&gt;</span> 图片展示 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -42,16 +40,15 @@
         <div class="portfolio-content">
             <ul class="cl portfolio-area">
                 @{
-                    foreach (var item in imgUris)
+                    for (int i = 0; i < bookViewModel.ImageUris.Length; i++)
                     {
-                        <li class="item" id="picItem-@picIndex">
+                        <li class="item" id="picItem-@i">
                             <div class="portfoliobox">
                                 <input class="checkbox" name="" type="checkbox" value="">
-                                <div class="picbox"><a href="@item" data-lightbox="gallery" data-title="-"><img src="@item"></a></div>
-                                <div class="textbox" style="text-align: center;"><a href="javascript:;" v-on:click="DeleteImage('@item','@picIndex')" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 删除</a> </div>
+                                <div class="picbox"><a href="@bookViewModel.ImageUris[i]" data-lightbox="gallery" data-title="-"><img src="@bookViewModel.ImageUris[i]"></a></div>
+                                <div class="textbox" style="text-align: center;"><a href="javascript:;" v-on:click="DeleteImage('@bookViewModel.ImageNames[i]','@i')" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 删除</a> </div>
                             </div>
                         </li>
-                        picIndex++;
                     }
                 }
             </ul>
@@ -66,13 +63,13 @@
         $(".portfolio-area li").Huihover();
     });
 
-    var imgUris = '@bookViewModel.ImageUris';
+    @*var imgUris = '@bookViewModel.ImageUris';
     var imgUrisArray;
     if (imgUris != null && imgUris!='') {
         imgUrisArray = imgUris.split(',');
     } else {
         imgUrisArray = new Array();
-    }
+    }*@
 
     new Vue({
         el: '#app',
@@ -95,18 +92,18 @@
         {
             DeleteImage: function (imgUri,objId) {
                 var self = this;
-                if (imgUrisArray.indexOf(imgUri) > -1) {
-                    //imgUrisArray = removeValueFromArray(imgUrisArray, imgUri);//remove item from array
-                    imgUrisArray.removeByValue(imgUri); 
+                //if (imgUrisArray.indexOf(imgUri) > -1) {
+                //    //imgUrisArray = removeValueFromArray(imgUrisArray, imgUri);//remove item from array
+                //    imgUrisArray.removeByValue(imgUri); 
                     //console.log(imgUrisArray);
                  $.ajax({
                         type: 'post',
-                        url: '/Article/EditImages/@bookViewModel.BookUid',
+                        url: '/Article/ImageDelete/@bookViewModel.BookUid',
                         async: true,//异步
                         dataType: 'json',
                         data:
                         {
-                            "ImageUris": imgUrisArray.toString()
+                            "imgName": imgUri
                         },
                         beforeSend: function () {
                         },
@@ -129,6 +126,5 @@
                     //ev.preventDefault();
                 }
             }
-        }
     });
 </script>

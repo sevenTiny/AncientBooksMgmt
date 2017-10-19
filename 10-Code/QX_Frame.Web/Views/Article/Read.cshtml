@@ -5,7 +5,7 @@
 @using QX_Frame.Data.DTO;
 @{
     BookViewModel bookViewModel = Model as BookViewModel;
-    string[] imgUris = bookViewModel.ImageUris.Split(',');
+    string[] imgUris = bookViewModel.ImageUris;
 }
 <div class="cl pd-20" style=" background-color:#5bacb6">
     <!-- <img class="avatar size-XL l" src="static/h-ui/images/ucnter/avatar-default.jpg"> -->

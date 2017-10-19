@@ -6,8 +6,8 @@
 @using QX_Frame.Data.DTO;
 @{
     BookViewModel bookViewModel = Model as BookViewModel;
-    string[] imgUris = bookViewModel.ImageUris.Split(',');
-    int imgCount = string.IsNullOrEmpty(bookViewModel.ImageUris) == true ? 0 : imgUris.Count();
+    string[] imgUris = bookViewModel.ImageUris;
+    int imgCount = imgUris.Length;
 }
 <link href="~/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
 <div class="page-container" id="app">
@@ -73,30 +73,30 @@
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>
 <script type="text/javascript">
-    var imgUris = '@bookViewModel.ImageUris';
+    @*var imgUris = '@bookViewModel.ImageUris';
     var imgUrisArray;
     if (imgUris != null && imgUris!='') {
         imgUrisArray = imgUris.split(',');
     } else {
         imgUrisArray = new Array();
-    }
+    }*@
 
     new Vue({
         el: '#app',
         data: {
-            "ArticleUid":"@bookViewModel.BookUid",
-            "Title":"@bookViewModel.Title",
-            "Title2":"@bookViewModel.Title2",
-            "Volume":"@bookViewModel.Volume",
-            "Dynasty":"@bookViewModel.Dynasty",
-            "CategoryId":"@bookViewModel.CategoryId",
-            "Functionary":"@bookViewModel.Functionary",
-            "Publisher":"@bookViewModel.Publisher",
-            "Version":"@bookViewModel.Version",
-            "FromBF49":"@bookViewModel.FromBF49",
-            "FromAF49":"@bookViewModel.FromAF49",
-            "ImageUris":"@bookViewModel.ImageUris",
-            "Notice":"@bookViewModel.Notice"
+            "ArticleUid": "@bookViewModel.BookUid",
+            "Title": "@bookViewModel.Title",
+            "Title2": "@bookViewModel.Title2",
+            "Volume": "@bookViewModel.Volume",
+            "Dynasty": "@bookViewModel.Dynasty",
+            "CategoryId": "@bookViewModel.CategoryId",
+            "Functionary": "@bookViewModel.Functionary",
+            "Publisher": "@bookViewModel.Publisher",
+            "Version": "@bookViewModel.Version",
+            "FromBF49": "@bookViewModel.FromBF49",
+            "FromAF49": "@bookViewModel.FromAF49",
+            "ImageUris": "@bookViewModel.ImageUris",
+            "Notice": "@bookViewModel.Notice"
         },
         methods:
         {
@@ -109,7 +109,8 @@
                     dataType: 'json',
                     data:
                     {
-                        "ImageUris": imgUrisArray.toString()
+                        //"ImageUris": imgUrisArray.toString()
+                        "ImageUris": '@bookViewModel.BookUid'
                     },
                     beforeSend: function () {
                     },
@@ -131,7 +132,7 @@
                 ev.preventDefault();
             }
         }
-     })
+    });
     function imgUrisAdd(uri) {
         if (imgUrisArray.indexOf(uri) < 0) {
             imgUrisArray.push(uri);
@@ -201,7 +202,6 @@
                 // 检测是否已经安装flash，检测flash的版本
                 flashVersion = (function () {
                     var version;
-
                     try {
                         version = navigator.plugins['Shockwave Flash'];
                         version = version.description;

@@ -5,7 +5,7 @@
 @using QX_Frame.Data.DTO;
 @{
     BookViewModel bookViewModel = Model as BookViewModel;
-    string[] imgUris = bookViewModel.ImageUris.Split(',');
+    string[] imgUris = bookViewModel.ImageUris;
     int picIndex = 0;
 }
 <link href="~/lib/lightbox2/2.8.1/css/lightbox.css" rel="stylesheet" type="text/css">
