@@ -144,6 +144,37 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        public string ReadEntity(Guid id)
+        {
+            using (var fact = Wcf<BookService>())
+            {
+                var channel = fact.CreateChannel();
+                TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+
+                BookViewModel bookViewModel = new BookViewModel();
+
+                bookViewModel.BookUid = book.BookUid;
+                bookViewModel.Title = book.Title;
+                bookViewModel.Title2 = book.Title2;
+                bookViewModel.Volume = book.Volume;
+                bookViewModel.Dynasty = book.Dynasty;
+                bookViewModel.CategoryId = book.CategoryId;
+                bookViewModel.CategoryName = book.TB_Category.CategoryName;
+                bookViewModel.Functionary = book.Functionary;
+                bookViewModel.Publisher = book.Publisher;
+                bookViewModel.Version = book.Version;
+                bookViewModel.FromBF49 = book.FromBF49;
+                bookViewModel.FromAF49 = book.FromAF49;
+                bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
+                bookViewModel.Notice = book.Notice;
+
+
+                return bookViewModel.ToJson();
+               
+            }
+        }
+
+
         // Add
         [AuthenCheckAttribute(LimitCode = 1005)]
         public ActionResult Add()
