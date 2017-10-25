@@ -8,7 +8,7 @@
     string[] imgUris = bookViewModel.ImageUris;
     string imgUrisString = String.Join(",",imgUris);
 }
-<div class="cl pd-20" style=" background-color:#5bacb6">
+@*<div class="cl pd-20" style=" background-color:#5bacb6">
     <!-- <img class="avatar size-XL l" src="static/h-ui/images/ucnter/avatar-default.jpg"> -->
     <dl style="margin-left:80px; color:#fff">
         <dt>
@@ -17,13 +17,13 @@
         </dt>
         <dd class="pt-10 f-12" style="margin-left:0"></dd>
     </dl>
-</div>
+</div>*@
 <div class="pd-20">
     <input id="hidden_imgUris" type="hidden" value="@imgUrisString" />
     <table class="table">
         <tbody>
             <tr>
-                <td width="30%">@bookViewModel.Title</td>
+                <td width="30%" style="color:#0094ff">@bookViewModel.Title</td>
                 <td width="5%">
                     <a class="btn btn-primary radius" id="jump_front" href="javascript:picJump(-1);"><i class="Hui-iconfont">&#xe67d;</i></a>
                 </td>
