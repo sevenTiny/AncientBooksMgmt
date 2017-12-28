@@ -9,10 +9,9 @@ namespace QX_Frame.Web.Controllers
 {
     public class HomeController : Controller
     {
-        [AuthenCheck]
         public ActionResult Index()
         {
-            return View();
+            return Redirect("/User/Login");
         }
 
         public ActionResult About()
