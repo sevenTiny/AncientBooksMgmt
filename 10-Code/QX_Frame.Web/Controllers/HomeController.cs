@@ -11,7 +11,7 @@ namespace QX_Frame.Web.Controllers
     {
         public ActionResult Index()
         {
-            return Redirect("/User/Login");
+            return View();
         }
 
         public ActionResult About()
