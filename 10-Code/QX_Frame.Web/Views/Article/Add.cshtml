@@ -173,6 +173,18 @@
                             self.message = data.msg;
                             layer.msg('添加成功!', { icon: 6, time: 1000 });
                             document.getElementById("form-article-add").reset();
+                            self.Title = "";
+                            self.Title2 = "";
+                            self.Volume = "";
+                            self.Dynasty = "";
+                            self.CategoryId = "";
+                            self.Functionary = "";
+                            self.Publisher = "";
+                            self.Version = "";
+                            self.FromBF49 = "";
+                            self.FromAF49 = "";
+                            self.ImageUris = "";
+                            self.Notice = "";
                         } else {
                             layer.msg('添加失败，请稍后重试!', { icon: 6, time: 1000 });
                             console.log(data.msg);
