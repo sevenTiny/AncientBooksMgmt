@@ -3,8 +3,10 @@
     ViewBag.Title = "新增文章";
 }
 @using QX_Frame.Data.Entities;
-@{ 
-    List<TB_Category> categoryList = Model as List<TB_Category>;
+@{
+    List<TB_Category>
+    categoryList = Model as List<TB_Category>
+        ;
 
 }
 <link href="~/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
@@ -22,21 +24,7 @@
                 <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2" v-model="Title2">
             </div>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍分类：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select name="articletype" class="select" v-model="CategoryId">
-                        @{
-                            foreach (var item in categoryList)
-                            {
-                                <option value="@item.CategoryId">@item.CategoryName</option>
-                            }
-                        }
-                    </select>
-                </span>
-            </div>
-        </div>
+
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">卷数：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -80,6 +68,21 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍分类：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="articletype" class="select" v-model="CategoryId">
+                        @{
+                            foreach (var item in categoryList)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <textarea name="abstract" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,200)" v-model="Notice"></textarea>
@@ -111,7 +114,7 @@
             -->
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                <button v-on:click="submit" class="btn btn-primary radius" type="button"><i class="Hui-iconfont" >&#xe632;</i> 保存并提交审核</button>
+                <button v-on:click="submit" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存并提交审核</button>
                 <!-- <button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button> -->
                 <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
             </div>

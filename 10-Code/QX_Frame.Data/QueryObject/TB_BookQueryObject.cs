@@ -64,6 +64,7 @@ namespace QX_Frame.Data.QueryObject
 		public String NameFan { get; set; }
 		public String NameJian { get; set; }
 
+
 		//query condition // null default
 		public override Expression<Func<TB_Book, bool>> QueryCondition {get { return base.QueryCondition; } set { base.QueryCondition = value; } }
 

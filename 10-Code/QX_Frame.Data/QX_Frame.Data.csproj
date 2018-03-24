@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Configs\QX_Frame_Data_Config.cs" />
     <Compile Include="DTO\BookCategoryViewModel.cs" />
+    <Compile Include="DTO\BookExportViewModel.cs" />
     <Compile Include="DTO\BookViewModel.cs" />
     <Compile Include="DTO\LimitViewModel.cs" />
     <Compile Include="DTO\UserViewModel.cs" />

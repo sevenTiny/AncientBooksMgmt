@@ -17,6 +17,8 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using QX_Frame.Data.Configs;
+using System.Reflection;
+using System.Collections;
 
 namespace QX_Frame.Web.Controllers
 {
@@ -72,6 +74,7 @@ namespace QX_Frame.Web.Controllers
                         bookViewModel.FromAF49 = item.FromAF49;
                         //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
                         bookViewModel.Notice = item.Notice;
+                        bookViewModel.CreateTime = item.CreateTime;
 
                         bookViewList.Add(bookViewModel);
                     }
@@ -111,6 +114,8 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.FromAF49 = book.FromAF49;
                 bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
+                bookViewModel.CreateTime = book.CreateTime;
+
 
                 return View(bookViewModel);
             }
@@ -139,6 +144,8 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.FromAF49 = book.FromAF49;
                 bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
+                bookViewModel.CreateTime = book.CreateTime;
+
 
                 return View(bookViewModel);
             }
@@ -167,24 +174,54 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.FromAF49 = book.FromAF49;
                 bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.Notice = book.Notice;
+                bookViewModel.CreateTime = book.CreateTime;
 
 
                 return bookViewModel.ToJson();
-               
+
             }
         }
 
 
         // Add
-        [AuthenCheckAttribute(LimitCode = 1005)]
+        //[AuthenCheckAttribute(LimitCode = 1005)]
         public ActionResult Add()
         {
             using (var fact = Wcf<CategoryService>())
             {
                 var channel = fact.CreateChannel();
                 List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
-                return View(categoryList);
+                List<TB_Category> resultList = DealCategory(categoryList, new List<TB_Category>(), 0);
+                return View(resultList);
             }
+        }
+
+        //处理分类层级关系
+        private List<TB_Category> DealCategory(List<TB_Category> categoryList, List<TB_Category> resultList, int startPid)
+        {
+            var searchList = categoryList.Where(t => t.PId == startPid).ToList();
+            foreach (var item in searchList)
+            {
+                item.CategoryName = item.CategoryName.Replace("-","");
+                string spaceString = "";
+                for (int i = 0; i < item.Levels; i++)
+                {
+                    spaceString += "-";
+                }
+                if (startPid != 0)
+                {
+                    item.CategoryName = $"{spaceString}{item.CategoryName}";
+                }
+            }
+            foreach (var item in searchList)
+            {
+                resultList.Add(item);
+                if (categoryList.FirstOrDefault(t => t.PId != 0 && t.PId == item.CategoryId)!=null)
+                {
+                    return DealCategory(categoryList, resultList, item.CategoryId);
+                }
+            }
+            return resultList;
         }
 
         [AuthenCheckAttribute(LimitCode = 1005)]
@@ -205,6 +242,7 @@ namespace QX_Frame.Web.Controllers
                 book.FromAF49 = Request["FromAF49"];
                 book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
                 book.Notice = Request["Notice"];
+                book.CreateTime = DateTime.Now;
 
                 bool isSuccess = true;
                 Transaction_Helper_DG.Transaction(() =>
@@ -311,6 +349,28 @@ namespace QX_Frame.Web.Controllers
             }
         }
 
+        public static DataTable ToDataTable<T>(IEnumerable<T> collection)
+        {
+            var props = typeof(T).GetProperties();
+            var dt = new DataTable();
+            dt.Columns.AddRange(props.Select(p => new DataColumn(p.Name, p.PropertyType)).ToArray());
+            if (collection.Count() > 0)
+            {
+                for (int i = 0; i < collection.Count(); i++)
+                {
+                    ArrayList tempList = new ArrayList();
+                    foreach (PropertyInfo pi in props)
+                    {
+                        object obj = pi.GetValue(collection.ElementAt(i), null);
+                        tempList.Add(obj);
+                    }
+                    object[] array = tempList.ToArray();
+                    dt.LoadDataRow(array, true);
+                }
+            }
+            return dt;
+        }
+
         [AuthenCheckAttribute(LimitCode = 1007)]
         public ActionResult ExportArticle()
         {
@@ -321,11 +381,36 @@ namespace QX_Frame.Web.Controllers
                     var channel = fact.CreateChannel();
 
                     TB_BookQueryObject bookQuery = new TB_BookQueryObject();
-                    bookQuery.SqlConnectionString = QX_Frame_Data_Config.ConnectionString_DB_QX_Frame_CMS;
-                    bookQuery.SqlExecuteType = App.Base.Options.ExecuteType.ExecuteDataTable;
-                    bookQuery.SqlStatementTextOrSpName = "select * from TB_Book";
 
-                    DataTable dt = channel.QuerySql(bookQuery).Cast<DataTable>();
+                    List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
+
+                    List<BookExportViewModel> bookExportViewList = new List<BookExportViewModel>();
+
+                    foreach (var item in bookList)
+                    {
+                        BookExportViewModel bookExportViewModel = new BookExportViewModel();
+                        TB_CmsStatus cmsStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>();
+                        int bookStatus = cmsStatus.StatusId;
+
+                        if (bookStatus == opt_CmsStatus.NORMAL.ToInt())
+                        {
+                            bookExportViewModel.标题 = item.Title;
+                            bookExportViewModel.其他题名 = item.Title2;
+                            bookExportViewModel.卷数 = item.Volume;
+                            bookExportViewModel.朝代 = item.Dynasty;
+                            bookExportViewModel.分类 = item.TB_Category?.CategoryName;
+                            bookExportViewModel.责任人 = item.Functionary;
+                            bookExportViewModel.出版者 = item.Publisher;
+                            bookExportViewModel.版本 = item.Version;
+                            bookExportViewModel.出处49年前 = item.FromBF49;
+                            bookExportViewModel.出处49年后 = item.FromAF49;
+                            bookExportViewModel.备注 = item.Notice;
+
+                            bookExportViewList.Add(bookExportViewModel);
+                        }
+                    }
+
+                    DataTable dt = ToDataTable(bookExportViewList);
 
                     string outPutZipFile = Path.Combine(Server.MapPath("~/Uploads/OutPut"), "AncientBooks.xlsx");
 
@@ -487,6 +572,7 @@ namespace QX_Frame.Web.Controllers
                 bookViewModel.FromBF49 = book.FromBF49;
                 bookViewModel.FromAF49 = book.FromAF49;
                 bookViewModel.Notice = book.Notice;
+                bookViewModel.CreateTime = book.CreateTime;
 
                 bookViewModel.ImageUris = GetImageUrisFromFolder(id.ToString());
                 bookViewModel.ImageNames = GetImageNamesFromFolder(id.ToString());
@@ -743,6 +829,7 @@ namespace QX_Frame.Web.Controllers
                         bookViewModel.FromAF49 = item.FromAF49;
                         //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
                         bookViewModel.Notice = item.Notice;
+                        bookViewModel.CreateTime = item.CreateTime;
 
                         bookViewList.Add(bookViewModel);
                     }

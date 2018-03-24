@@ -51,5 +51,7 @@ namespace QX_Frame.Data.DTO
 
         // 
         public String Notice { get; set; }
+
+        public DateTime CreateTime { get; set; }
     }
 }

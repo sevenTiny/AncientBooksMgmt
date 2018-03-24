@@ -22,21 +22,7 @@
                 <input type="text" class="input-text" value="" placeholder="" id="articletitle2" name="articletitle2" v-model="Title2">
             </div>
         </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍分类：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select name="articletype" class="select" v-model="CategoryId">
-                        @{
-                            foreach (var item in bookCategoryViewModel.CategoryList)
-                            {
-                                <option value="@item.CategoryId">@item.CategoryName</option>
-                            }
-                        }
-                    </select>
-                </span>
-            </div>
-        </div>
+
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">卷数：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -80,6 +66,21 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>古籍分类：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="articletype" class="select" v-model="CategoryId">
+                        @{
+                            foreach (var item in bookCategoryViewModel.CategoryList)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <textarea name="abstract" cols="" rows="" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="$.Huitextarealength(this,200)" v-model="Notice"></textarea>
@@ -94,7 +95,7 @@
             </div>
         </div>
     </form>
-</div>  
+</div>
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 @*<script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>*@
@@ -836,4 +837,4 @@
 
     })(jQuery);
 </script>
-    <!--/请在上方写此页面业务相关的脚本-->
+<!--/请在上方写此页面业务相关的脚本-->

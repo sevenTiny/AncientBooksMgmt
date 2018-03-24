@@ -3,9 +3,9 @@
   "description": "configuration file about qx_frame app start",
   "database": {
     "connectionStrings": {
-      "QX_Frame_Default": "data source=.;initial catalog=DB_QX_Frame_MS_CMS;persist security info=True;user id=sa;password=CYj(9yyz*8;MultipleActiveResultSets=True;App=EntityFramework",
-      "ConnectionString_DB_QX_Frame_CMS": "data source=.;initial catalog=DB_QX_Frame_MS_CMS;persist security info=True;user id=sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework",
-      "ConnectionString_DB_QX_Frame_User": "data source=.;initial catalog=DB_QX_Frame_MS_User;persist security info=True;user id=Sa;password=Sa123456;MultipleActiveResultSets=True;App=EntityFramework"
+      "QX_Frame_Default": "data source=39.106.60.172;initial catalog=DB_QX_Frame_MS_CMS;persist security info=True;user id=sa;password=CYj(9yyz*8;MultipleActiveResultSets=True;App=EntityFramework",
+      "ConnectionString_DB_QX_Frame_CMS": "data source=39.106.60.172;initial catalog=DB_QX_Frame_MS_CMS;persist security info=True;user id=sa;password=CYj(9yyz*8;MultipleActiveResultSets=True;App=EntityFramework",
+      "ConnectionString_DB_QX_Frame_User": "data source=39.106.60.172;initial catalog=DB_QX_Frame_MS_User;persist security info=True;user id=Sa;password=CYj(9yyz*8;MultipleActiveResultSets=True;App=EntityFramework"
     }
   },
   "log": {

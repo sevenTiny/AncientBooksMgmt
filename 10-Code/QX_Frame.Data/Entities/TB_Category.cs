@@ -18,24 +18,42 @@ using QX_Frame.Bantina.Bankinate;
 
 namespace QX_Frame.Data.Entities
 {
-	/// <summary>
-	/// public class TB_Category
-	/// </summary>
-	[Serializable]
-	[Table(TableName = "TB_Category")]
-	public class TB_Category: Entity<DB_QX_Frame_MS_CMS, TB_Category>
-	{
-		/// <summary>
-		/// construction method
-		/// </summary>
-		public TB_Category(){}
+    /// <summary>
+    /// public class TB_Category
+    /// </summary>
+    [Serializable]
+    [Table(TableName = "TB_Category")]
+    public class TB_Category : Entity<DB_QX_Frame_MS_CMS, TB_Category>
+    {
+        /// <summary>
+        /// construction method
+        /// </summary>
+        public TB_Category() { }
 
-		// PK（identity）  分类Id
-		[Key]
-		[AutoIncrease]
-		public Int32 CategoryId { get;set; }
-		// 分类名称
-		[Column]
-		public String CategoryName { get;set; }
-	}
+        // PK（identity）  分类Id
+        [Key]
+        [AutoIncrease]
+        public Int32 CategoryId { get; set; }
+        // 分类名称
+        [Column]
+        public String CategoryName { get; set; }
+
+        [Column]
+        public int PId { get; set; }
+
+        [Column]
+        public int Levels { get; set; }
+
+        [Column]
+        public DateTime CreateTime { get; set; }
+
+        [Column]
+        public DateTime LastChangeTIme { get; set; }
+
+        [Column]
+        public bool IsDelete { get; set; }
+
+        [Column]
+        public int TB_Category_CategoryId { get; set; }
+    }
 }
