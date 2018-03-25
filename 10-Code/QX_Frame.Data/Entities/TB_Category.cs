@@ -42,18 +42,15 @@ namespace QX_Frame.Data.Entities
         public int PId { get; set; }
 
         [Column]
-        public int Levels { get; set; }
+        public int Levels { get; set; } = 0;
 
         [Column]
-        public DateTime CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         [Column]
-        public DateTime LastChangeTIme { get; set; }
+        public DateTime LastChangeTime { get; set; } = DateTime.Now;
 
         [Column]
         public bool IsDelete { get; set; }
-
-        [Column]
-        public int TB_Category_CategoryId { get; set; }
     }
 }

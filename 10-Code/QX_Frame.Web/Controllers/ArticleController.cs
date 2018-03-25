@@ -187,41 +187,8 @@ namespace QX_Frame.Web.Controllers
         //[AuthenCheckAttribute(LimitCode = 1005)]
         public ActionResult Add()
         {
-            using (var fact = Wcf<CategoryService>())
-            {
-                var channel = fact.CreateChannel();
-                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
-                List<TB_Category> resultList = DealCategory(categoryList, new List<TB_Category>(), 0);
-                return View(resultList);
-            }
-        }
-
-        //处理分类层级关系
-        private List<TB_Category> DealCategory(List<TB_Category> categoryList, List<TB_Category> resultList, int startPid)
-        {
-            var searchList = categoryList.Where(t => t.PId == startPid).ToList();
-            foreach (var item in searchList)
-            {
-                item.CategoryName = item.CategoryName.Replace("-","");
-                string spaceString = "";
-                for (int i = 0; i < item.Levels; i++)
-                {
-                    spaceString += "-";
-                }
-                if (startPid != 0)
-                {
-                    item.CategoryName = $"{spaceString}{item.CategoryName}";
-                }
-            }
-            foreach (var item in searchList)
-            {
-                resultList.Add(item);
-                if (categoryList.FirstOrDefault(t => t.PId != 0 && t.PId == item.CategoryId)!=null)
-                {
-                    return DealCategory(categoryList, resultList, item.CategoryId);
-                }
-            }
-            return resultList;
+            //获取显示全部分类列表
+            return View(CategoryController.GetAllCategory());
         }
 
         [AuthenCheckAttribute(LimitCode = 1005)]
