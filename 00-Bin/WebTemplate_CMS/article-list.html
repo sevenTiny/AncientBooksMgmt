@@ -122,7 +122,7 @@
 					</tbody>
 				</table>
 			</div>
-		</div>
+	</div>
 		<!--_footer 作为公共模版分离出去-->
 		<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
 		<script type="text/javascript" src="lib/layer/2.4/layer.js"></script>
@@ -134,16 +134,48 @@
 		<script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
 		<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
 		<script type="text/javascript">
-			$('.table-sort').dataTable({
-	"aaSorting": [[ 1, "desc" ]],//默认第几个排序
-	"bStateSave": true,//状态保存
-	"pading":false,
-	"aoColumnDefs": [
-	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-	  {"orderable":false,"aTargets":[0,5,6,7,8,9,10]}// 不参与排序的列
-	  ]
-	});
+		$(function(){
+			var articleTable = $('.table-sort').dataTable({
+				"aaSorting": [[ 1, "desc" ]],//默认第几个排序
+				"bStateSave": true,//状态保存
+				"pading":false,
+				"aoColumnDefs": [
+				  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+				  {"orderable":false,"aTargets":[0,5,6,7,8,9,10]}// 不参与排序的列
+				  ]
+			});
 
+			var origHtml = $("#DataTables_Table_0").html();
+
+			$('#DataTables_Table_0_wrapper .input-text ').keydown(function(e){
+				if (e.keyCode != 13) return; 
+				if ($(this).val() == '') {
+					$("#DataTables_Table_0").html(origHtml);
+					return; 
+				}
+				if (matchSymbol($(this).val())) {
+					$("#DataTables_Table_0").html(origHtml);
+					return;
+				}
+				toRed($(this).val());
+			})
+			function toRed(content){
+                // $("#DataTables_Table_0").html(origHtml);
+                // articleTable.search();
+                var thisHtml = $("#DataTables_Table_0").html();
+                if (thisHtml == origHtml){
+                	var newHtml = origHtml;
+                } else {
+                	var newHtml = thisHtml;
+                }
+                var x = newHtml.replace(new RegExp(content,"gm"),"<font color='red' >"+content+"</font>")
+                $("#DataTables_Table_0").html(x);
+            }
+
+            function matchSymbol (sym) {
+            	var containSpecial = RegExp(/[(\ )(\~)(\!)(\@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/); 
+				return ( containSpecial.test(sym) );
+            }
 			/*古籍-阅读*/
 			function article_show(title,url,w,h){
 				var index = layer.open({
@@ -234,6 +266,7 @@
 				$(obj).parents("tr").find(".td-manage").html("");
 				layer.msg('已提交申请，耐心等待审核!', {icon: 1,time:2000});
 			}
+        })
 
 		</script> 
 	</body>

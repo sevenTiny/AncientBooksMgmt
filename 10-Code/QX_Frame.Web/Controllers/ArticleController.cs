@@ -82,7 +82,7 @@ namespace QX_Frame.Web.Controllers
 
                 bookCategoryViewModel.BookViewModelList = bookViewList;
 
-                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                List<TB_Category> categoryList = CategoryController.GetAllCategory();
                 bookCategoryViewModel.CategoryList = categoryList;
 
                 return View(bookCategoryViewModel);
@@ -803,7 +803,7 @@ namespace QX_Frame.Web.Controllers
                 }
                 bookCategoryViewModel.BookViewModelList = bookViewList;
 
-                List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+                List<TB_Category> categoryList = CategoryController.GetAllCategory();
                 bookCategoryViewModel.CategoryList = categoryList;
 
                 return View(bookCategoryViewModel);

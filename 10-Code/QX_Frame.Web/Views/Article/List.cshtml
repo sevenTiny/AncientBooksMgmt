@@ -148,17 +148,51 @@
                     }
                 });
             });
-        });
 
 
-        $('.table-sort').dataTable({
-            "aaSorting": [[1, "desc"]],//默认第几个排序
-            "bStateSave": true,//状态保存
-            "pading": false,
-            "aoColumnDefs": [
-                //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-                { "orderable": false, "aTargets": [0, 5, 6, 7, 8, 9, 10] }// 不参与排序的列
-            ]
+            $('.table-sort').dataTable({
+                "aaSorting": [[1, "desc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "pading": false,
+                "aoColumnDefs": [
+                    //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+                    { "orderable": false, "aTargets": [0, 5, 6, 7, 8, 9, 10] }// 不参与排序的列
+                ]
+            });
+
+   //         var origHtml = $("#DataTables_Table_0").html();
+
+			//$('#DataTables_Table_0_wrapper .input-text ').keydown(function(e){
+			//	if (e.keyCode != 13) return;
+			//	if ($(this).val() == '') {
+			//		$("#DataTables_Table_0").html(origHtml);
+			//		return;
+			//	}
+			//	if (matchSymbol($(this).val())) {
+			//		$("#DataTables_Table_0").html(origHtml);
+			//		return;
+			//	}
+			//	toRed($(this).val());
+			//})
+   //         function toRed(content) {
+   //             // $("#DataTables_Table_0").html(origHtml);
+   //             // articleTable.search();
+   //             var thisHtml = $("#DataTables_Table_0").html();
+   //             if (thisHtml == origHtml) {
+   //                 var newHtml = origHtml;
+   //             } else {
+   //                 var newHtml = thisHtml;
+   //             }
+   //             var x = newHtml.replace(new RegExp(content, "gm"), "<font color='red' >" + content + "</font>")
+   //             $("#DataTables_Table_0").html(x);
+   //         }
+
+
+            function matchSymbol (sym) {
+            	var containSpecial = RegExp(/[(\ )(\~)(\!)(\@@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/);
+				return ( containSpecial.test(sym) );
+            }
+
         });
 
         /*古籍-阅读*/

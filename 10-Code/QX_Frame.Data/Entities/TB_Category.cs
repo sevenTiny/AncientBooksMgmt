@@ -52,5 +52,7 @@ namespace QX_Frame.Data.Entities
 
         [Column]
         public bool IsDelete { get; set; }
+
+        public int? TB_Category_CategoryId { get; set; }
     }
 }
