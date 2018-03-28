@@ -78,7 +78,7 @@ namespace QX_Frame.Data.QueryObject
 				func = func.And(t => true);
 			}
 
-			if (this.CategoryId>1)
+			if (this.CategoryId>=1)
 			{
 				func = func.And(tt => tt.CategoryId == this.CategoryId);
 			}
@@ -88,7 +88,12 @@ namespace QX_Frame.Data.QueryObject
 				func = func.And(tt => tt.Title.Contains(this.Title) || tt.Title.Contains(this.NameFan) || tt.Title.Contains(this.NameJian));
 			}
 
-			return func;
+            if (!string.IsNullOrEmpty(this.Title2))
+            {
+                func = func.Or(tt => tt.Title2.Contains(this.Title2) || tt.Title2.Contains(this.NameFan) || tt.Title2.Contains(this.NameJian));
+            }
+
+            return func;
 		}
 	}
 }

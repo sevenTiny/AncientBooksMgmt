@@ -7,6 +7,8 @@
     BookCategoryViewModel bookCategoryViewModel = Model as BookCategoryViewModel;
     List<BookViewModel> bookList = bookCategoryViewModel.BookViewModelList;
     int count = bookList.Count;
+    string articleTitleJian = ViewBag.ArticleTitleJian;
+    string articleTitleFan = ViewBag.ArticleTitleFan;
 }
 <!DOCTYPE HTML>
 <html>
@@ -44,6 +46,7 @@
                 <!-- <button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button> -->
                 <span class="select-box inline">
                     <select name="categoryId" class="select">
+                        <option value="0">全部</option>
                         @{
                             foreach (var item in bookCategoryViewModel.CategoryList)
                             {
@@ -89,7 +92,7 @@
                 <tbody>
                     @{
                         int index = 0;
-                        foreach (var item in bookList.OrderByDescending(t=>t.CreateTime))
+                        foreach (var item in bookList.OrderByDescending(t => t.CreateTime))
                         {
                             index++;
                             <tr class="text-c">
@@ -97,9 +100,35 @@
                                 @*<td>@(bookList.IndexOf(item) + 1)</td>*@
                                 <td>@index</td>
                                 <td class="text-l">
-                                    <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','/Article/Detail/@item.BookUid','10001')" title="查看">@item.Title</u>
+                                    <u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','/Article/Detail/@item.BookUid','10001')" title="查看">
+                                        @if (!string.IsNullOrEmpty(articleTitleJian) && item.Title.Contains(articleTitleJian))
+                                        {
+                                            @Html.Raw(item.Title.Replace(articleTitleJian, "<span style=\"color:red;\">" + articleTitleJian + "</span>"));
+                                        }
+                                        else if (!string.IsNullOrEmpty(articleTitleFan) && item.Title.Contains(articleTitleFan))
+                                        {
+                                            @Html.Raw(item.Title.Replace(articleTitleFan, "<span style=\"color:red;\">" + articleTitleFan + "</span>"));
+                                        }
+                                        else
+                                        {
+                                            @item.Title;
+                                        }else
+                                    </u>
                                 </td>
-                                <td>@item.Title2</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(articleTitleJian) && item.Title2.Contains(articleTitleJian))
+                                    {
+                                        @Html.Raw(item.Title2.Replace(articleTitleJian, "<span style=\"color:red;\">" + articleTitleJian + "</span>"));
+                                    }
+                                    else if (!string.IsNullOrEmpty(articleTitleFan) && item.Title2.Contains(articleTitleFan))
+                                    {
+                                        @Html.Raw(item.Title2.Replace(articleTitleFan, "<span style=\"color:red;\">" + articleTitleFan + "</span>"));
+                                    }
+                                    else
+                                    {
+                                        @item.Title2
+                                    }
+                                </td>
                                 <td>@item.Volume</td>
                                 <td>@item.Dynasty</td>
                                 <td>@item.Functionary</td>
@@ -160,37 +189,37 @@
                 ]
             });
 
-   //         var origHtml = $("#DataTables_Table_0").html();
+            //         var origHtml = $("#DataTables_Table_0").html();
 
-			//$('#DataTables_Table_0_wrapper .input-text ').keydown(function(e){
-			//	if (e.keyCode != 13) return;
-			//	if ($(this).val() == '') {
-			//		$("#DataTables_Table_0").html(origHtml);
-			//		return;
-			//	}
-			//	if (matchSymbol($(this).val())) {
-			//		$("#DataTables_Table_0").html(origHtml);
-			//		return;
-			//	}
-			//	toRed($(this).val());
-			//})
-   //         function toRed(content) {
-   //             // $("#DataTables_Table_0").html(origHtml);
-   //             // articleTable.search();
-   //             var thisHtml = $("#DataTables_Table_0").html();
-   //             if (thisHtml == origHtml) {
-   //                 var newHtml = origHtml;
-   //             } else {
-   //                 var newHtml = thisHtml;
-   //             }
-   //             var x = newHtml.replace(new RegExp(content, "gm"), "<font color='red' >" + content + "</font>")
-   //             $("#DataTables_Table_0").html(x);
-   //         }
+            //$('#DataTables_Table_0_wrapper .input-text ').keydown(function(e){
+            //	if (e.keyCode != 13) return;
+            //	if ($(this).val() == '') {
+            //		$("#DataTables_Table_0").html(origHtml);
+            //		return;
+            //	}
+            //	if (matchSymbol($(this).val())) {
+            //		$("#DataTables_Table_0").html(origHtml);
+            //		return;
+            //	}
+            //	toRed($(this).val());
+            //})
+            //         function toRed(content) {
+            //             // $("#DataTables_Table_0").html(origHtml);
+            //             // articleTable.search();
+            //             var thisHtml = $("#DataTables_Table_0").html();
+            //             if (thisHtml == origHtml) {
+            //                 var newHtml = origHtml;
+            //             } else {
+            //                 var newHtml = thisHtml;
+            //             }
+            //             var x = newHtml.replace(new RegExp(content, "gm"), "<font color='red' >" + content + "</font>")
+            //             $("#DataTables_Table_0").html(x);
+            //         }
 
 
-            function matchSymbol (sym) {
-            	var containSpecial = RegExp(/[(\ )(\~)(\!)(\@@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/);
-				return ( containSpecial.test(sym) );
+            function matchSymbol(sym) {
+                var containSpecial = RegExp(/[(\ )(\~)(\!)(\@@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/);
+                return (containSpecial.test(sym));
             }
 
         });

@@ -32,6 +32,8 @@ namespace QX_Frame.Web.Controllers
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
 
+            
+
             using (var fact = Wcf<BookService>())
             {
                 var channel = fact.CreateChannel();
@@ -40,10 +42,14 @@ namespace QX_Frame.Web.Controllers
 
                 bookQuery.CategoryId = categoryId;
                 bookQuery.Title = title;
+                bookQuery.Title2 = title;
+
                 if (!string.IsNullOrEmpty(title))
                 {
                     bookQuery.NameFan = Strings.StrConv(title, VbStrConv.TraditionalChinese, 0);
                     bookQuery.NameJian = Strings.StrConv(title, VbStrConv.SimplifiedChinese, 0);
+                    ViewBag.ArticleTitleJian = bookQuery.NameJian;
+                    ViewBag.ArticleTitleFan = bookQuery.NameFan;
                 }
 
                 List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
