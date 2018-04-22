@@ -298,6 +298,8 @@ namespace QX_Frame.Web.Controllers
                                 book.FromAF49 = row[9].ToString();
                                 book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
                                 book.Notice = row[10].ToString();
+                                book.CreateTime = DateTime.Now;
+
                                 isSuccess = isSuccess && channel.Add(book);
 
                                 isSuccess = isSuccess && channel_cms.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
@@ -316,7 +318,7 @@ namespace QX_Frame.Web.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new ContentResult { Content = "<script>alert('导入失败，请检查您的导入模板！')</script>" };
             }
