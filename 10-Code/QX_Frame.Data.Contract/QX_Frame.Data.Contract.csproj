@@ -44,8 +44,6 @@
     <Compile Include="IBookService.cs" />
     <Compile Include="ICategoryService.cs" />
     <Compile Include="IChineseZodiacNameService.cs" />
-    <Compile Include="ICmsStatusNameService.cs" />
-    <Compile Include="ICmsStatusService.cs" />
     <Compile Include="ICommentReplyService.cs" />
     <Compile Include="IConstellationNameService.cs" />
     <Compile Include="IDisplayCodeService.cs" />

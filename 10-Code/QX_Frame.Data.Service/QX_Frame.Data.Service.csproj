@@ -59,8 +59,6 @@
     <Compile Include="BookService.cs" />
     <Compile Include="CategoryService.cs" />
     <Compile Include="ChineseZodiacNameService.cs" />
-    <Compile Include="CmsStatusNameService.cs" />
-    <Compile Include="CmsStatusService.cs" />
     <Compile Include="CommentReplyService.cs" />
     <Compile Include="ConstellationNameService.cs" />
     <Compile Include="DisplayCodeService.cs" />

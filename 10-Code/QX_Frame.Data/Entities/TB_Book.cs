@@ -75,5 +75,8 @@ namespace QX_Frame.Data.Entities
 
         [Column]
         public DateTime CreateTime { get; set; }
+
+        [Column]
+        public int IsDelete { get; set; }
     }
 }

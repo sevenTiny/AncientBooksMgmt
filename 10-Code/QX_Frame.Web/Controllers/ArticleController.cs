@@ -32,7 +32,7 @@ namespace QX_Frame.Web.Controllers
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
 
-            
+
 
             using (var fact = Wcf<BookService>())
             {
@@ -61,10 +61,8 @@ namespace QX_Frame.Web.Controllers
                 foreach (var item in bookList)
                 {
                     BookViewModel bookViewModel = new BookViewModel();
-                    TB_CmsStatus cmsStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>();
-                    int bookStatus = cmsStatus.StatusId;
 
-                    if (bookStatus == opt_CmsStatus.NORMAL.ToInt())
+                    if (item.IsDelete == opt_CmsStatus.NORMAL.ToInt())
                     {
                         bookViewModel.BookUid = item.BookUid;
                         bookViewModel.Title = item.Title;
@@ -216,6 +214,7 @@ namespace QX_Frame.Web.Controllers
                 book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
                 book.Notice = Request["Notice"];
                 book.CreateTime = DateTime.Now;
+                book.IsDelete = opt_CmsStatus.NORMAL.ToInt();
 
                 bool isSuccess = true;
                 Transaction_Helper_DG.Transaction(() =>
@@ -224,12 +223,6 @@ namespace QX_Frame.Web.Controllers
                     {
                         var channel = fact.CreateChannel();
                         isSuccess = isSuccess && channel.Add(book);
-                    }
-
-                    using (var fact = Wcf<CmsStatusService>())
-                    {
-                        var channel = fact.CreateChannel();
-                        isSuccess = isSuccess && channel.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
                     }
                 });
                 if (isSuccess)
@@ -263,62 +256,57 @@ namespace QX_Frame.Web.Controllers
 
                 using (var fact = Wcf<BookService>())
                 {
-                    using (var fact_cms = Wcf<CmsStatusService>())
+                    var channel = fact.CreateChannel();
+
+                    List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
+
+                    DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
+
+                    bool isSuccess = true;
+                    Transaction_Helper_DG.Transaction(() =>
                     {
-                        var channel = fact.CreateChannel();
-                        var channel_cms = fact_cms.CreateChannel();
-
-                        List<TB_Category> categoryList = channel.QueryAll(new TB_CategoryQueryObject()).Cast<List<TB_Category>>();
-
-                        DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
-
-                        bool isSuccess = true;
-                        Transaction_Helper_DG.Transaction(() =>
+                        foreach (DataRow row in table.Rows)
                         {
-                            foreach (DataRow row in table.Rows)
+                            TB_Book book = new TB_Book();
+                            book.Title = row[0].ToString();
+                            book.Title2 = row[1].ToString();
+                            book.Volume = row[2].ToString();
+                            book.Dynasty = row[3].ToString();
+                            int categoryId = row[4].ToInt();
+                            if (categoryList.Count(t => t.CategoryId == categoryId) > 0)
                             {
-                                TB_Book book = new TB_Book();
-                                book.Title = row[0].ToString();
-                                book.Title2 = row[1].ToString();
-                                book.Volume = row[2].ToString();
-                                book.Dynasty = row[3].ToString();
-                                int categoryId = row[4].ToInt();
-                                if (categoryList.Count(t => t.CategoryId == categoryId) > 0)
-                                {
-                                    book.CategoryId = categoryId;
-                                }
-                                else
-                                {
-                                    book.CategoryId = categoryList.FirstOrDefault().CategoryId;
-                                }
-                                book.Functionary = row[5].ToString();
-                                book.Publisher = row[6].ToString();
-                                book.Version = row[7].ToString();
-                                book.FromBF49 = row[8].ToString();
-                                book.FromAF49 = row[9].ToString();
-                                book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
-                                book.Notice = row[10].ToString();
-                                book.CreateTime = DateTime.Now;
-
-                                isSuccess = isSuccess && channel.Add(book);
-
-                                isSuccess = isSuccess && channel_cms.Add(new TB_CmsStatus { CmsUid = book.BookUid, StatusId = opt_CmsStatus.NORMAL.ToInt() });
+                                book.CategoryId = categoryId;
                             }
-                        });
+                            else
+                            {
+                                book.CategoryId = categoryList.FirstOrDefault().CategoryId;
+                            }
+                            book.Functionary = row[5].ToString();
+                            book.Publisher = row[6].ToString();
+                            book.Version = row[7].ToString();
+                            book.FromBF49 = row[8].ToString();
+                            book.FromAF49 = row[9].ToString();
+                            book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
+                            book.Notice = row[10].ToString();
+                            book.CreateTime = DateTime.Now;
+                            book.IsDelete = opt_CmsStatus.NORMAL.ToInt();
 
-                        if (isSuccess)
-                        {
-                            return OK("添加成功!");
+                            isSuccess = isSuccess && channel.Add(book);
                         }
-                        else
-                        {
-                            //return ERROR("添加失败!");
-                            return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
-                        }
+                    });
+
+                    if (isSuccess)
+                    {
+                        return OK("添加成功!");
+                    }
+                    else
+                    {
+                        //return ERROR("添加失败!");
+                        return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new ContentResult { Content = "<script>alert('导入失败，请检查您的导入模板！')</script>" };
             }
@@ -364,10 +352,8 @@ namespace QX_Frame.Web.Controllers
                     foreach (var item in bookList)
                     {
                         BookExportViewModel bookExportViewModel = new BookExportViewModel();
-                        TB_CmsStatus cmsStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>();
-                        int bookStatus = cmsStatus.StatusId;
 
-                        if (bookStatus == opt_CmsStatus.NORMAL.ToInt())
+                        if (item.IsDelete == opt_CmsStatus.NORMAL.ToInt())
                         {
                             bookExportViewModel.标题 = item.Title;
                             bookExportViewModel.其他题名 = item.Title2;
@@ -427,8 +413,6 @@ namespace QX_Frame.Web.Controllers
             {
                 var channel = fact.CreateChannel();
                 TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
-
-
 
                 BookViewModel bookViewModel = new BookViewModel();
 
@@ -786,9 +770,8 @@ namespace QX_Frame.Web.Controllers
                 foreach (var item in bookList)
                 {
                     BookViewModel bookViewModel = new BookViewModel();
-                    int bookStatus = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == item.BookUid }).Cast<TB_CmsStatus>().StatusId;
 
-                    if (bookStatus == opt_CmsStatus.DELETE.ToInt())
+                    if (item.IsDelete == opt_CmsStatus.DELETE.ToInt())
                     {
                         bookViewModel.BookUid = item.BookUid;
                         bookViewModel.Title = item.Title;
@@ -815,20 +798,18 @@ namespace QX_Frame.Web.Controllers
                 bookCategoryViewModel.CategoryList = categoryList;
 
                 return View(bookCategoryViewModel);
-
-                return View(bookViewList);
             }
         }
 
         [AuthenCheckAttribute(LimitCode = 1012)]
         public ActionResult DeleteDeal(Guid id)
         {
-            using (var fact = Wcf<CmsStatusService>())
+            using (var fact = Wcf<BookService>())
             {
                 var channel = fact.CreateChannel();
-                TB_CmsStatus status = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == id }).Cast<TB_CmsStatus>();
-                status.StatusId = opt_CmsStatus.DELETE.ToInt();
-                if (channel.Update(status))
+                TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+                book.IsDelete = opt_CmsStatus.DELETE.ToInt();
+                if (channel.Update(book))
                 {
                     return OK("删除成功！");
                 }
@@ -839,12 +820,12 @@ namespace QX_Frame.Web.Controllers
         [AuthenCheckAttribute(LimitCode = 1013)]
         public ActionResult ReDelete(Guid id)
         {
-            using (var fact = Wcf<CmsStatusService>())
+            using (var fact = Wcf<BookService>())
             {
                 var channel = fact.CreateChannel();
-                TB_CmsStatus status = channel.QuerySingle(new TB_CmsStatusQueryObject { QueryCondition = t => t.CmsUid == id }).Cast<TB_CmsStatus>();
-                status.StatusId = opt_CmsStatus.NORMAL.ToInt();
-                if (channel.Update(status))
+                TB_Book book = channel.QuerySingle(new TB_BookQueryObject { QueryCondition = t => t.BookUid == id }).Cast<TB_Book>();
+                book.IsDelete = opt_CmsStatus.NORMAL.ToInt();
+                if (channel.Update(book))
                 {
                     return OK("修改成功！");
                 }

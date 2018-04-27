@@ -66,8 +66,6 @@
     <Compile Include="Entities\TB_Book.cs" />
     <Compile Include="Entities\TB_Category.cs" />
     <Compile Include="Entities\TB_ChineseZodiacName.cs" />
-    <Compile Include="Entities\TB_CmsStatus.cs" />
-    <Compile Include="Entities\TB_CmsStatusName.cs" />
     <Compile Include="Entities\TB_CommentReply.cs" />
     <Compile Include="Entities\TB_ConstellationName.cs" />
     <Compile Include="Entities\TB_DisplayCode.cs" />
@@ -87,8 +85,6 @@
     <Compile Include="QueryObject\TB_BookQueryObject.cs" />
     <Compile Include="QueryObject\TB_CategoryQueryObject.cs" />
     <Compile Include="QueryObject\TB_ChineseZodiacNameQueryObject.cs" />
-    <Compile Include="QueryObject\TB_CmsStatusNameQueryObject.cs" />
-    <Compile Include="QueryObject\TB_CmsStatusQueryObject.cs" />
     <Compile Include="QueryObject\TB_CommentReplyQueryObject.cs" />
     <Compile Include="QueryObject\TB_ConstellationNameQueryObject.cs" />
     <Compile Include="QueryObject\TB_DisplayCodeQueryObject.cs" />

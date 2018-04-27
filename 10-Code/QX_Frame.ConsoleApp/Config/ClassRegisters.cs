@@ -28,8 +28,6 @@ namespace QX_Frame.ConsoleApp.Config
             AppBase.Register(c => new UserInfoService());
             AppBase.Register(c => new UserRoleStatusService());
             AppBase.Register(c => new UserRoleStatusService());
-            AppBase.Register(c => new CmsStatusNameService());
-            AppBase.Register(c => new CmsStatusService());
 
 
 

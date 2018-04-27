@@ -27,8 +27,6 @@ namespace QX_Frame.Web.Config
             WebControllerBase.Register(c => new UserInfoService());
             WebControllerBase.Register(c => new UserRoleStatusService());
             WebControllerBase.Register(c => new UserRoleStatusService());
-            WebControllerBase.Register(c => new CmsStatusNameService());
-            WebControllerBase.Register(c => new CmsStatusService());
 
 
 
