@@ -29,15 +29,26 @@ namespace QX_Frame.ConsoleApp
             new Config.ClassRegisters();   //register classes
             new Config.ConfigBootStrap();
 
-            using (var fact = Wcf<UserAccountService>())
+            for (int i = 0; i < 100; i++)
             {
-                var channel = fact.CreateChannel();
-                List<TB_UserAccount> userAccountList = channel.QueryAll(new TB_UserAccountQueryObject()).Cast<List<TB_UserAccount>>();
-                foreach (var item in userAccountList)
+                Console.WriteLine(i);
+                using (var db = new CmsDbContext())
                 {
-                    Console.WriteLine($"Uid = {item.UserUid} , loginId = {item.LoginId}");
+                    var books = db.QueryList<TB_Book>(t => true);
+                    Console.WriteLine(books.FirstOrDefault().Title);
                 }
             }
+
+
+            //using (var fact = Wcf<UserAccountService>())
+            //{
+            //    var channel = fact.CreateChannel();
+            //    List<TB_UserAccount> userAccountList = channel.QueryAll(new TB_UserAccountQueryObject()).Cast<List<TB_UserAccount>>();
+            //    foreach (var item in userAccountList)
+            //    {
+            //        Console.WriteLine($"Uid = {item.UserUid} , loginId = {item.LoginId}");
+            //    }
+            //}
 
             #endregion
 
@@ -81,10 +92,10 @@ namespace QX_Frame.ConsoleApp
             Console.WriteLine("any key to exit ...");
             Console.ReadKey();
         }
-       
-     
+
+
     }
-     
+
     /// <summary>
     /// 中文字符工具类
     /// </summary>
@@ -120,28 +131,28 @@ namespace QX_Frame.ConsoleApp
             int ret = LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TRADITIONAL_CHINESE, source, source.Length, target, source.Length);
             return target;
         }
-    
-     
- 
+
+
+
     }
     public class Two
     {
         public static string StringConvert(string x, string type)
-         {
+        {
             String value = String.Empty;
-             switch (type)
-             {
-                 case "1"://转繁体
-                     value =  Strings.StrConv(x, VbStrConv.TraditionalChinese,0);
-                     break;
-                 case "2":
-                     value = Strings.StrConv(x, VbStrConv.SimplifiedChinese, 0);
-                     break;
-                 default:
-                     break;
-             }
-             return value;
-         }
+            switch (type)
+            {
+                case "1"://转繁体
+                    value = Strings.StrConv(x, VbStrConv.TraditionalChinese, 0);
+                    break;
+                case "2":
+                    value = Strings.StrConv(x, VbStrConv.SimplifiedChinese, 0);
+                    break;
+                default:
+                    break;
+            }
+            return value;
+        }
     }
-    
+
 }

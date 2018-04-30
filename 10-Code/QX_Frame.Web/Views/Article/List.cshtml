@@ -9,6 +9,8 @@
     int count = bookList.Count;
     string articleTitleJian = ViewBag.ArticleTitleJian;
     string articleTitleFan = ViewBag.ArticleTitleFan;
+    int totalCount = (int)(bookCategoryViewModel.TotalCount / 30);
+    int pageIndex = Convert.ToInt32(ViewData["iDisplayStart"] ?? "1");
 }
 <!DOCTYPE HTML>
 <html>
@@ -27,7 +29,68 @@
     <link rel="stylesheet" type="text/css" href="~/lib/Hui-iconfont/1.0.8/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="~/H-ui/h-ui.admin/skin/default/skin.css" id="skin" />
     <link rel="stylesheet" type="text/css" href="~/H-ui/h-ui.admin/css/style.css" />
+    <style>
+        /*
+              * 外面盒子样式---自己定义
+              */
 
+        .page_div {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-family: "microsoft yahei";
+            color: #666666;
+            margin-right: 10px;
+            padding-left: 20px;
+            box-sizing: border-box;
+        }
+            /*
+             * 页数按钮样式
+             */
+
+            .page_div a {
+                min-width: 30px;
+                height: 28px;
+                border: 1px solid #dce0e0 !important;
+                text-align: center;
+                margin: 0 4px;
+                cursor: pointer;
+                line-height: 28px;
+                color: #666666;
+                font-size: 13px;
+                display: inline-block;
+            }
+
+        #firstPage,
+        #lastPage {
+            width: 50px;
+            color: #0073A9;
+            border: 1px solid #0073A9 !important;
+        }
+
+        #prePage,
+        #nextPage {
+            width: 70px;
+            color: #0073A9;
+            border: 1px solid #0073A9 !important;
+        }
+
+        .page_div .current {
+            background-color: #0073A9;
+            border-color: #0073A9;
+            color: #FFFFFF;
+        }
+
+        .totalPages {
+            margin: 0 10px;
+        }
+
+            .totalPages span,
+            .totalSize span {
+                color: #0073A9;
+                margin: 0 5px;
+            }
+    </style>
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <script src="~/Scripts/vue.min.js"></script>
     <script src="~/Scripts/common.js"></script>
@@ -70,7 +133,7 @@
                 <a href="javascript:document.getElementById('fileInput').click();" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量导入</a>
                 <input id="fileInput" name="fileInput" type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" value="" hidden="hidden">
                 <a href="/Article/ExportArticle" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量导出</a>
-            </span> <span class="r">共有数据：<strong>@count</strong> 条</span>
+            </span> <span class="r">共有数据：<strong>@bookCategoryViewModel.TotalCount</strong> 条</span>
         </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
@@ -92,7 +155,7 @@
                 <tbody>
                     @{
                         int index = 0;
-                        foreach (var item in bookList.OrderByDescending(t => t.CreateTime))
+                        foreach (var item in bookList)
                         {
                             index++;
                             <tr class="text-c">
@@ -147,6 +210,9 @@
                     }
                 </tbody>
             </table>
+            <br />
+            <div value="1 0"></div>
+            <div id="page" class="page_div"></div>
         </div>
     </div>
     <!--请在下方写此页面业务相关的脚本-->
@@ -154,6 +220,7 @@
     <script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="~/lib/laypage/1.2/laypage.js"></script>
     <script src="~/Scripts/ajaxfileupload.js"></script>
+    <script src="~/Scripts/paging.js"></script>
     <!--请在下方写此页面业务相关的脚本-->
     <script type="text/javascript">
         $(document).ready(function () {
@@ -180,13 +247,25 @@
 
             $('.table-sort').dataTable({
                 "aaSorting": [[1, "asc"]],//默认第几个排序
+                "bPaginate": false,//分页工具条显示
                 "bStateSave": true,//状态保存
                 "pading": false,
+                "info": false,   //去掉底部文字
                 "aoColumnDefs": [
                     //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
                     { "orderable": false, "aTargets": [0, 5, 6, 7, 8, 9, 10] }// 不参与排序的列
                 ]
             });
+
+            //分页
+            $("#page").paging({
+                pageNo: @pageIndex,
+                totalPage: @totalCount,
+                totalSize: @totalCount,
+                callback: function (num) {
+                    window.location = "/Article/List?iDisplayLength=30&iDisplayStart=" + num;
+                }
+            })
 
             function matchSymbol(sym) {
                 var containSpecial = RegExp(/[(\ )(\~)(\!)(\@@)(\#)(\$)(\%)(\^)(\&)(\*)(\()(\))(\-)(\_)(\+)(\=)(\[)(\])(\{)(\})(\|)(\\)(\;)(\:)(\')(\")(\,)(\.)(\/)(\<)(\>)(\?)(\)]+/);

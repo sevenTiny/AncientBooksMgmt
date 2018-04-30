@@ -19,6 +19,8 @@ using System.Web.Mvc;
 using QX_Frame.Data.Configs;
 using System.Reflection;
 using System.Collections;
+using System.Linq.Expressions;
+using QX_Frame.App.Base;
 
 namespace QX_Frame.Web.Controllers
 {
@@ -26,70 +28,91 @@ namespace QX_Frame.Web.Controllers
     {
 
         // 古籍列表查看 1004
-        [AuthenCheckAttribute(LimitCode = 1004)]
+        //[AuthenCheckAttribute(LimitCode = 1004)]
         public ActionResult List()
         {
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
+            int count = 0;
 
+            BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+            bookCategoryViewModel.BookViewModelList = GetBookViewModel(opt_CmsStatus.NORMAL.ToInt(), categoryId, title, out count);
+            bookCategoryViewModel.CategoryList = CategoryController.GetAllCategory();
+            bookCategoryViewModel.TotalCount = count;
 
+            return View(bookCategoryViewModel);
+        }
 
-            using (var fact = Wcf<BookService>())
+        //public JsonResult GetBookViewModelJson(int categoryId, string title)
+        //{
+        //    int count = 0;
+        //    List<BookViewModel> list = GetBookViewModel(categoryId, title, out count);
+        //    return Json(new { data = Newtonsoft.Json.JsonConvert.SerializeObject(list), iTotalDisplayRecords = list?.Count ?? 0, iTotalRecords = count }, JsonRequestBehavior.AllowGet);
+        //}
+
+        public List<BookViewModel> GetBookViewModel(int cmsStatus, int categoryId, string title, out int count)
+        {
+            int pageIndex = Convert.ToInt32(Request["iDisplayStart"] ?? "1");
+            int pageSize = Convert.ToInt32(Request["iDisplayLength"] ?? "30");
+            ViewData["iDisplayStart"] = pageIndex;
+            using (var db = new DB_MS_CMS())
             {
-                var channel = fact.CreateChannel();
-
-                TB_BookQueryObject bookQuery = new TB_BookQueryObject();
-
-                bookQuery.CategoryId = categoryId;
-                bookQuery.Title = title;
-                bookQuery.Title2 = title;
-
+                Expression<Func<TB_Book, bool>> filter = t => t.IsDelete == cmsStatus;
                 if (!string.IsNullOrEmpty(title))
                 {
-                    bookQuery.NameFan = Strings.StrConv(title, VbStrConv.TraditionalChinese, 0);
-                    bookQuery.NameJian = Strings.StrConv(title, VbStrConv.SimplifiedChinese, 0);
-                    ViewBag.ArticleTitleJian = bookQuery.NameJian;
-                    ViewBag.ArticleTitleFan = bookQuery.NameFan;
+                    string fan = Strings.StrConv(title, VbStrConv.TraditionalChinese, 0);
+                    string jian = Strings.StrConv(title, VbStrConv.SimplifiedChinese, 0);
+                    Expression<Func<TB_Book, bool>> filterFanJian = t => t.Title.Contains(fan) || t.Title.Contains(jian) || t.Title2.Contains(fan) || t.Title2.Contains(jian);
+                    filter = filter.And(filterFanJian);
+                }
+                if (categoryId > 0)
+                {
+                    filter = filter.And(t => t.CategoryId == categoryId);
                 }
 
-                List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
+                List<TB_Book> bookList = db.QueryListPaging<TB_Book>(pageIndex, pageSize, t => t.CreateTime, filter, true);
 
-                BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+                count = db.QueryCount<TB_Book>(filter);
+
+                List<TB_Category> categoryList2 = db.QueryList<TB_Category>();
+                Dictionary<int, string> categoryDic = categoryList2?.ToDictionary(t => t.CategoryId, t => t.CategoryName);
 
                 List<BookViewModel> bookViewList = new List<BookViewModel>();
 
-                foreach (var item in bookList)
+                foreach (var item in bookList ?? new List<TB_Book>())
                 {
                     BookViewModel bookViewModel = new BookViewModel();
 
-                    if (item.IsDelete == opt_CmsStatus.NORMAL.ToInt())
+                    bookViewModel.BookUid = item.BookUid;
+                    bookViewModel.Title = item.Title;
+                    bookViewModel.Title2 = item.Title2;
+                    bookViewModel.Volume = item.Volume;
+                    bookViewModel.Dynasty = item.Dynasty;
+                    bookViewModel.CategoryId = item.CategoryId;
+                    //get categoryname
+                    string categoryName;
+                    if (categoryDic != null)
                     {
-                        bookViewModel.BookUid = item.BookUid;
-                        bookViewModel.Title = item.Title;
-                        bookViewModel.Title2 = item.Title2;
-                        bookViewModel.Volume = item.Volume;
-                        bookViewModel.Dynasty = item.Dynasty;
-                        bookViewModel.CategoryId = item.CategoryId;
-                        bookViewModel.CategoryName = item.TB_Category?.CategoryName;
-                        bookViewModel.Functionary = item.Functionary;
-                        bookViewModel.Publisher = item.Publisher;
-                        bookViewModel.Version = item.Version;
-                        bookViewModel.FromBF49 = item.FromBF49;
-                        bookViewModel.FromAF49 = item.FromAF49;
-                        //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
-                        bookViewModel.Notice = item.Notice;
-                        bookViewModel.CreateTime = item.CreateTime;
-
-                        bookViewList.Add(bookViewModel);
+                        categoryDic.TryGetValue(item.CategoryId, out categoryName);
+                        bookViewModel.CategoryName = categoryName;
                     }
+                    else
+                    {
+                        bookViewModel.CategoryName = "默认分类";
+                    }
+                    bookViewModel.Functionary = item.Functionary;
+
+                    bookViewModel.Publisher = item.Publisher;
+                    bookViewModel.Version = item.Version;
+                    bookViewModel.FromBF49 = item.FromBF49;
+                    bookViewModel.FromAF49 = item.FromAF49;
+                    //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
+                    bookViewModel.Notice = item.Notice;
+                    bookViewModel.CreateTime = item.CreateTime;
+
+                    bookViewList.Add(bookViewModel);
                 }
-
-                bookCategoryViewModel.BookViewModelList = bookViewList;
-
-                List<TB_Category> categoryList = CategoryController.GetAllCategory();
-                bookCategoryViewModel.CategoryList = categoryList;
-
-                return View(bookCategoryViewModel);
+                return bookViewList;
             }
         }
 
@@ -746,59 +769,68 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Delete
-        [AuthenCheckAttribute(LimitCode = 1012)]
+        //[AuthenCheckAttribute(LimitCode = 1012)]
         public ActionResult Delete()
         {
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
+            int count = 0;
 
-            using (var fact = Wcf<BookService>())
-            {
-                var channel = fact.CreateChannel();
+            BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+            bookCategoryViewModel.BookViewModelList = GetBookViewModel(opt_CmsStatus.DELETE.ToInt(), categoryId, title, out count);
+            bookCategoryViewModel.CategoryList = CategoryController.GetAllCategory();
+            bookCategoryViewModel.TotalCount = count;
 
-                TB_BookQueryObject bookQuery = new TB_BookQueryObject();
+            return View(bookCategoryViewModel);
+            //int categoryId = Request["categoryId"].ToInt();
+            //string title = Request["title"];
 
-                bookQuery.CategoryId = categoryId;
-                bookQuery.Title = title;
+            //using (var fact = Wcf<BookService>())
+            //{
+            //    var channel = fact.CreateChannel();
 
-                List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
+            //    TB_BookQueryObject bookQuery = new TB_BookQueryObject();
 
-                BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
+            //    bookQuery.CategoryId = categoryId;
+            //    bookQuery.Title = title;
 
-                List<BookViewModel> bookViewList = new List<BookViewModel>();
+            //    List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
 
-                foreach (var item in bookList)
-                {
-                    BookViewModel bookViewModel = new BookViewModel();
+            //    BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
 
-                    if (item.IsDelete == opt_CmsStatus.DELETE.ToInt())
-                    {
-                        bookViewModel.BookUid = item.BookUid;
-                        bookViewModel.Title = item.Title;
-                        bookViewModel.Title2 = item.Title2;
-                        bookViewModel.Volume = item.Volume;
-                        bookViewModel.Dynasty = item.Dynasty;
-                        bookViewModel.CategoryId = item.CategoryId;
-                        bookViewModel.CategoryName = item.TB_Category.CategoryName;
-                        bookViewModel.Functionary = item.Functionary;
-                        bookViewModel.Publisher = item.Publisher;
-                        bookViewModel.Version = item.Version;
-                        bookViewModel.FromBF49 = item.FromBF49;
-                        bookViewModel.FromAF49 = item.FromAF49;
-                        //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
-                        bookViewModel.Notice = item.Notice;
-                        bookViewModel.CreateTime = item.CreateTime;
+            //    List<BookViewModel> bookViewList = new List<BookViewModel>();
 
-                        bookViewList.Add(bookViewModel);
-                    }
-                }
-                bookCategoryViewModel.BookViewModelList = bookViewList;
+            //    foreach (var item in bookList)
+            //    {
+            //        BookViewModel bookViewModel = new BookViewModel();
 
-                List<TB_Category> categoryList = CategoryController.GetAllCategory();
-                bookCategoryViewModel.CategoryList = categoryList;
+            //        if (item.IsDelete == opt_CmsStatus.DELETE.ToInt())
+            //        {
+            //            bookViewModel.BookUid = item.BookUid;
+            //            bookViewModel.Title = item.Title;
+            //            bookViewModel.Title2 = item.Title2;
+            //            bookViewModel.Volume = item.Volume;
+            //            bookViewModel.Dynasty = item.Dynasty;
+            //            bookViewModel.CategoryId = item.CategoryId;
+            //            bookViewModel.CategoryName = item.TB_Category.CategoryName;
+            //            bookViewModel.Functionary = item.Functionary;
+            //            bookViewModel.Publisher = item.Publisher;
+            //            bookViewModel.Version = item.Version;
+            //            bookViewModel.FromBF49 = item.FromBF49;
+            //            bookViewModel.FromAF49 = item.FromAF49;
+            //            //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
+            //            bookViewModel.Notice = item.Notice;
+            //            bookViewModel.CreateTime = item.CreateTime;
 
-                return View(bookCategoryViewModel);
-            }
+            //            bookViewList.Add(bookViewModel);
+            //        }
+            //    }
+            //    bookCategoryViewModel.BookViewModelList = bookViewList;
+
+            //    List<TB_Category> categoryList = CategoryController.GetAllCategory();
+            //    bookCategoryViewModel.CategoryList = categoryList;
+
+            //    return View(bookCategoryViewModel);
         }
 
         [AuthenCheckAttribute(LimitCode = 1012)]

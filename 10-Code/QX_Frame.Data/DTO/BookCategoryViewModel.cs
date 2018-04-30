@@ -11,5 +11,7 @@ namespace QX_Frame.Data.DTO
         //
         public List<TB_Category> CategoryList { get; set; }
 
+        public int TotalCount { get; set; }
+
     }
 }
