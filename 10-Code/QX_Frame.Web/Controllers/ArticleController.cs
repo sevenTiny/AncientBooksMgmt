@@ -28,12 +28,15 @@ namespace QX_Frame.Web.Controllers
     {
 
         // 古籍列表查看 1004
-        //[AuthenCheckAttribute(LimitCode = 1004)]
+        [AuthenCheckAttribute(LimitCode = 1004)]
         public ActionResult List()
         {
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
             int count = 0;
+
+            ViewData["search_title"] = title;
+            ViewData["search_categoryId"] = categoryId;
 
             BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
             bookCategoryViewModel.BookViewModelList = GetBookViewModel(opt_CmsStatus.NORMAL.ToInt(), categoryId, title, out count);
@@ -769,12 +772,14 @@ namespace QX_Frame.Web.Controllers
         }
 
         // Delete
-        //[AuthenCheckAttribute(LimitCode = 1012)]
+        [AuthenCheckAttribute(LimitCode = 1012)]
         public ActionResult Delete()
         {
             int categoryId = Request["categoryId"].ToInt();
             string title = Request["title"];
             int count = 0;
+            ViewData["search_title"] = title;
+            ViewData["search_categoryId"] = categoryId;
 
             BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
             bookCategoryViewModel.BookViewModelList = GetBookViewModel(opt_CmsStatus.DELETE.ToInt(), categoryId, title, out count);
@@ -782,55 +787,6 @@ namespace QX_Frame.Web.Controllers
             bookCategoryViewModel.TotalCount = count;
 
             return View(bookCategoryViewModel);
-            //int categoryId = Request["categoryId"].ToInt();
-            //string title = Request["title"];
-
-            //using (var fact = Wcf<BookService>())
-            //{
-            //    var channel = fact.CreateChannel();
-
-            //    TB_BookQueryObject bookQuery = new TB_BookQueryObject();
-
-            //    bookQuery.CategoryId = categoryId;
-            //    bookQuery.Title = title;
-
-            //    List<TB_Book> bookList = channel.QueryAll(bookQuery).Cast<List<TB_Book>>();
-
-            //    BookCategoryViewModel bookCategoryViewModel = new BookCategoryViewModel();
-
-            //    List<BookViewModel> bookViewList = new List<BookViewModel>();
-
-            //    foreach (var item in bookList)
-            //    {
-            //        BookViewModel bookViewModel = new BookViewModel();
-
-            //        if (item.IsDelete == opt_CmsStatus.DELETE.ToInt())
-            //        {
-            //            bookViewModel.BookUid = item.BookUid;
-            //            bookViewModel.Title = item.Title;
-            //            bookViewModel.Title2 = item.Title2;
-            //            bookViewModel.Volume = item.Volume;
-            //            bookViewModel.Dynasty = item.Dynasty;
-            //            bookViewModel.CategoryId = item.CategoryId;
-            //            bookViewModel.CategoryName = item.TB_Category.CategoryName;
-            //            bookViewModel.Functionary = item.Functionary;
-            //            bookViewModel.Publisher = item.Publisher;
-            //            bookViewModel.Version = item.Version;
-            //            bookViewModel.FromBF49 = item.FromBF49;
-            //            bookViewModel.FromAF49 = item.FromAF49;
-            //            //bookViewModel.ImageUris = GetImageUrisFromFolder(item.BookUid.ToString());
-            //            bookViewModel.Notice = item.Notice;
-            //            bookViewModel.CreateTime = item.CreateTime;
-
-            //            bookViewList.Add(bookViewModel);
-            //        }
-            //    }
-            //    bookCategoryViewModel.BookViewModelList = bookViewList;
-
-            //    List<TB_Category> categoryList = CategoryController.GetAllCategory();
-            //    bookCategoryViewModel.CategoryList = categoryList;
-
-            //    return View(bookCategoryViewModel);
         }
 
         [AuthenCheckAttribute(LimitCode = 1012)]

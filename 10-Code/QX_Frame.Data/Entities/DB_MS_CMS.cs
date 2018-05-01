@@ -12,7 +12,7 @@ namespace QX_Frame.Data.Entities
     {
         public DB_MS_CMS() : base(QX_Frame_Helper_DG_Config.ConnectionString_DB_QX_Frame_Default)
         {
-            LocalCache = true;
+            LocalCache = false;
         }
     }
 }
