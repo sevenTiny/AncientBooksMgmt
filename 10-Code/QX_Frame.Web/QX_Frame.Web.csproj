@@ -101,8 +101,8 @@
     <Reference Include="QX_Frame.Bantina">
       <HintPath>..\QX_Frame.Reference\QX_Frame.Bantina\QX_Frame.Bantina.dll</HintPath>
     </Reference>
-    <Reference Include="SevenTiny.Bantina.Bankinate, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SevenTiny.Bantina.Bankinate.1.0.2\lib\netstandard2.0\SevenTiny.Bantina.Bankinate.dll</HintPath>
+    <Reference Include="SevenTiny.Bantina.Bankinate, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SevenTiny.Bantina.Bankinate.1.0.34\lib\netstandard2.0\SevenTiny.Bantina.Bankinate.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
