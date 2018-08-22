@@ -289,15 +289,17 @@ namespace QX_Frame.Web.Controllers
                     DataTable table = Office_Helper_DG.ImportExceltoDt(filePath, 0, 0);
 
                     bool isSuccess = true;
-                    Transaction_Helper_DG.Transaction(() =>
+                    int successCount = 0;
+
+                    foreach (DataRow row in table.Rows)
                     {
-                        foreach (DataRow row in table.Rows)
+                        TB_Book book = new TB_Book();
+                        book.Title = row[0].ToString();
+                        book.Title2 = row[1].ToString();
+                        book.Volume = row[2].ToString();
+                        book.Dynasty = row[3].ToString();
+                        try
                         {
-                            TB_Book book = new TB_Book();
-                            book.Title = row[0].ToString();
-                            book.Title2 = row[1].ToString();
-                            book.Volume = row[2].ToString();
-                            book.Dynasty = row[3].ToString();
                             int categoryId = row[4].ToInt();
                             if (categoryList.Count(t => t.CategoryId == categoryId) > 0)
                             {
@@ -305,36 +307,45 @@ namespace QX_Frame.Web.Controllers
                             }
                             else
                             {
-                                book.CategoryId = categoryList.FirstOrDefault().CategoryId;
+                                book.CategoryId = categoryList?.FirstOrDefault()?.CategoryId ?? 0;
                             }
-                            book.Functionary = row[5].ToString();
-                            book.Publisher = row[6].ToString();
-                            book.Version = row[7].ToString();
-                            book.FromBF49 = row[8].ToString();
-                            book.FromAF49 = row[9].ToString();
-                            book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
-                            book.Notice = row[10].ToString();
-                            book.CreateTime = DateTime.Now;
-                            book.IsDelete = opt_CmsStatus.NORMAL.ToInt();
-
-                            isSuccess = isSuccess && channel.Add(book);
                         }
-                    });
+                        catch (Exception)
+                        {
+                            book.CategoryId = categoryList?.FirstOrDefault()?.CategoryId ?? 0;
+                        }
+
+                        book.Functionary = row[5].ToString();
+                        book.Publisher = row[6].ToString();
+                        book.Version = row[7].ToString();
+                        book.FromBF49 = row[8].ToString();
+                        book.FromAF49 = row[9].ToString();
+                        book.ImageUris = $"/Uploads/{book.BookUid.ToString()}";
+                        book.Notice = row[10].ToString();
+                        book.CreateTime = DateTime.Now;
+                        book.IsDelete = opt_CmsStatus.NORMAL.ToInt();
+
+                        isSuccess = isSuccess && channel.Add(book);
+
+                        successCount++;
+                    }
 
                     if (isSuccess)
                     {
-                        return OK("添加成功!");
+                        return OK($"添加成功! 成功{successCount}条，失败{table.Rows.Count - successCount}条!");
                     }
                     else
                     {
+                        return ERROR($"导入失败,请检查您的导入模板！成功{successCount}条，失败{table.Rows.Count - successCount}条!");
                         //return ERROR("添加失败!");
-                        return new ContentResult { Content = "<script>alert('导入失败,请检查您的导入模板！')</script>" };
+                        //return new ContentResult { Content = $"<script>alert()</script>" };
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new ContentResult { Content = "<script>alert('导入失败，请检查您的导入模板！')</script>" };
+                return ERROR($"导入失败,请检查您的导入模板！失败原因：" + ex.ToString());
+                // return new ContentResult { Content = "<script>alert('导入失败，请检查您的导入模板！失败原因：" + ex.ToString() + "')</script>" };
             }
         }
 

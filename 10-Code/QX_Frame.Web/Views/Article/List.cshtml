@@ -227,6 +227,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#fileInput").bind("change", function ajaxFileUpload() {
+                layer.msg('导入可能需要一段时间，请稍后...', { icon: 1, time: 3000 });
                 $.ajaxFileUpload({
                     type: 'post',
                     url: '/Article/ImportArticle',
@@ -235,8 +236,10 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.isSuccess) {
-                            layer.msg(data.msg, { icon: 1, time: 1000 });
+                            layer.msg(data.msg, { icon: 1, time: 3000 });
                             location.replace(location.href);//refresh
+                        } else {
+                            alert(data.msg);
                         }
                         console.log(data.msg);
                     },
